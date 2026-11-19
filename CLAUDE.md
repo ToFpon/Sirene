@@ -49,8 +49,9 @@ les premiers écouteurs à réduction de bruit.
 
 - Trame 2B25 : p1 = gauche, p2 = droit (01 porté, 00 retiré). 7i : y répondent sur demande et l'annoncent pour
   les deux écouteurs (auto-pause validée par Tof avec l'AppImage du fork d'OpenFreebuds). 6i : l'annoncent
-  d'elles-mêmes mais p1 reste à 01 — le gauche n'est JAMAIS signalé (ni par 2B25, ni par une autre trame, ni par
-  AVRCP : `btmon` muet, même sans programme connecté). Micrologiciel ; rien à faire côté PC.
+  d'elles-mêmes ; chez Tof, le gauche n'est signalé (p1 = 00) que posé dans le BOÎTIER (contact de charge), jamais
+  retiré de l'oreille (ni 2B25, ni autre trame, ni AVRCP : `btmon` muet, même sans programme). Avis de Tof, partagé :
+  capteur de port du gauche de SA paire en panne (matériel), pas une limite du modèle. Rien à faire côté PC.
 - 4i : font la pause elles-mêmes (AVRCP), sans programme. Le réglage dans les écouteurs : 2B11 lecture /
   2B10 écriture (p1 = 1 activé), vu à 01 sur les 6i de Tof.
 - Puce Bluetooth de Tof : MediaTek MT7922 (0e8d:7922) ; elle transmet bien les gestes (hors de cause).
