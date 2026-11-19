@@ -52,13 +52,27 @@ class Battery(Gtk.Box):
         self.bar.set_value(level)
 
 
-class DevicePage(Gtk.ScrolledWindow):
+class DevicePage(Gtk.Box):
+    """Onglets (demande de Tof) : État (piles, contrôle du bruit, port), Gestes, Son, Appareil (double connexion,
+    langue, infos). Un onglet sans aucune ligne visible (modèle sans ces fonctions) est caché."""
+
+    TABS = ("status", "gestures", "sound", "device")
+
     def __init__(self, app):
-        super().__init__(hscrollbar_policy=Gtk.PolicyType.NEVER, vexpand=True)
+        super().__init__(vexpand=True)
         self.app = app
         self._updaters: dict[tuple, list] = {}
-        self.page = Adw.PreferencesPage()
-        self.set_child(self.page)
+        self.pages: dict[str, tuple] = {}
+        self.stack = Adw.ViewStack(vexpand=True, hexpand=True)      # Adw.ViewStack est « final » : on le porte
+        self.append(self.stack)
+        for name, title, icon in (("status", tr("État"), "audio-headphones-symbolic"),
+                                  ("gestures", tr("Gestes"), "input-touchpad-symbolic"),
+                                  ("sound", tr("Son"), "audio-volume-high-symbolic"),
+                                  ("device", tr("Appareil"), "preferences-system-symbolic")):
+            page = Adw.PreferencesPage()
+            tab = self.stack.add_titled_with_icon(page, name, title, icon)
+            self.pages[name] = (page, tab, [])
+        self.page = None                                # onglet en cours de construction (_build)
         self._build()
 
     # --- outils ---
@@ -137,6 +151,14 @@ class DevicePage(Gtk.ScrolledWindow):
         self._on([(group, prop)], refresh)
         return row
 
+    def _add(self, group):
+        """Groupe ajouté à l'onglet en cours ; l'onglet suit la visibilité de ses groupes."""
+        page, tab, groups = self.pages[self.page]
+        page.add(group)
+        groups.append(group)
+        group.connect("notify::visible", lambda *_: tab.set_visible(any(g.get_visible() for g in groups)))
+        tab.set_visible(any(g.get_visible() for g in groups))
+
     def _group(self, title, rows, description=""):
         g = Adw.PreferencesGroup(title=title)
         if description:
@@ -149,12 +171,13 @@ class DevicePage(Gtk.ScrolledWindow):
         for r in rows:
             r.connect("notify::visible", lambda *_: sync())
         sync()
-        self.page.add(g)
+        self._add(g)
         return g
 
     # --- page ---
 
     def _build(self):
+        self.page = "status"
         # En tête : nom et piles
         self.head = Adw.PreferencesGroup()
         self.name = Gtk.Label(xalign=0)
@@ -172,32 +195,21 @@ class DevicePage(Gtk.ScrolledWindow):
         box.append(self.firmware)
         box.append(tiles)
         self.head.add(box)
-        self.page.add(self.head)
+        self._add(self.head)
         self._on([("battery", k) for k in ("left", "right", "case", "charging_left", "charging_right",
                                            "charging_case")] + [("state", k) for k in ("left", "right", "in_ear")]
                  + [("info", "software")], self._refresh_head)
 
         # Contrôle du bruit
         self.anc_buttons: dict[str, Gtk.ToggleButton] = {}
-        self.anc_row = Adw.ActionRow(title=tr("Mode"), visible=False)
-        self.anc_box = Gtk.Box(valign=Gtk.Align.CENTER)
+        # Boutons liés sur toute la largeur, textes abrégés si la place manque : en suffixe d'une ligne, ils
+        # imposaient leur largeur à la fenêtre (débordement en fenêtre étroite)
+        self.anc_box = Gtk.Box(homogeneous=True, visible=False, margin_bottom=12)
         self.anc_box.add_css_class("linked")
-        self.anc_row.add_suffix(self.anc_box)
+        self.anc_row = self.anc_box
         self._anc_guard = False
         self._on([("anc", "mode"), ("anc", "mode_options")], self._refresh_anc)
         self._group(tr("Contrôle du bruit"), [self.anc_row, self._combo("anc", "level", tr("Niveau"))])
-
-        # Gestes
-        self._group(tr("Gestes"), [self._combo("action", prop, title, opts=options_key(prop))
-                                   for prop, title in gesture_rows()])
-
-        # Son
-        self._group(tr("Son"), [
-            self._combo("sound", "eq_preset", tr("Égaliseur"), opts="eq_options"),
-            self._combo("sound", "quality", tr("Priorité")),
-            self._switch("config", "low_latency", tr("Faible latence"),
-                         tr("Moins de décalage entre l'image et le son (jeux, vidéos), au prix de la qualité")),
-        ])
 
         # Port des écouteurs
         self._group(tr("Port des écouteurs"), [
@@ -205,14 +217,34 @@ class DevicePage(Gtk.ScrolledWindow):
                          tr("Les écouteurs signalent quand on les retire : la pause automatique en a besoin")),
         ])
 
-        # Double connexion
+        # Gestes : un groupe par geste
+        self.page = "gestures"
+        rows = {prop: self._combo("action", prop, title, opts=options_key(prop)) for prop, title in gesture_rows()}
+        for title, props in ((tr("Tapes"), ("double_tap_left", "double_tap_right", "double_tap_in_call",
+                                            "triple_tap_left", "triple_tap_right")),
+                             (tr("Appui long"), ("long_tap_left", "long_tap_right", "long_tap_in_call",
+                                                 "noise_control_left", "noise_control_right")),
+                             (tr("Glisser"), ("swipe",))):
+            self._group(title, [rows[p] for p in props])
+
+        # Son
+        self.page = "sound"
+        self._group(tr("Son"), [
+            self._combo("sound", "eq_preset", tr("Égaliseur"), opts="eq_options"),
+            self._combo("sound", "quality", tr("Priorité")),
+            self._switch("config", "low_latency", tr("Faible latence"),
+                         tr("Moins de décalage entre l'image et le son (jeux, vidéos), au prix de la qualité")),
+        ])
+
+        # Appareil : double connexion, langue des messages, infos
+        self.page = "device"
         self.dc_devices = Adw.PreferencesGroup(title=tr("Appareils connus"), visible=False)
         self._dc_rows = []
         self._group(tr("Double connexion"), [
             self._switch("dual_connect", "enabled", tr("Connexion à deux appareils"),
                          tr("Rester relié au téléphone et à l'ordinateur à la fois")),
         ])
-        self.page.add(self.dc_devices)
+        self._add(self.dc_devices)
         self._on([("dual_connect", "devices")], self._refresh_dc)
 
         # Langue des messages vocaux, infos
@@ -251,7 +283,8 @@ class DevicePage(Gtk.ScrolledWindow):
             self.anc_buttons = {}
             first = None
             for opt in options:
-                b = Gtk.ToggleButton(label=label(opt))
+                b = Gtk.ToggleButton(child=Gtk.Label(label=label(opt), ellipsize=3), hexpand=True,
+                                     tooltip_text=label(opt))
                 if first is None:
                     first = b
                 else:
@@ -294,6 +327,7 @@ class MainWindow(Adw.ApplicationWindow):
         super().__init__(application=app, title=APP_NAME)
         self.app = app
         self.set_default_size(settings["window_width"], settings["window_height"])
+        self.set_size_request(360, 420)                # taille minimale : exigée par les points de rupture
         if settings["window_maximized"]:
             self.maximize()
         self.connect("close-request", self._on_close)
@@ -324,12 +358,34 @@ class MainWindow(Adw.ApplicationWindow):
                            ("device", self.device_page)):
             self.stack.add_named(page, name)
 
+        # Onglets : sélecteur dans l'en-tête, barre du bas si la fenêtre est étroite (comme les applications GNOME)
+        self.title = Adw.WindowTitle(title=APP_NAME)
+        self.switcher = Adw.ViewSwitcher(stack=self.device_page.stack, policy=Adw.ViewSwitcherPolicy.WIDE)
+        self.switcher_bar = Adw.ViewSwitcherBar(stack=self.device_page.stack)
+        header.set_title_widget(self.title)
+        self._narrow = False
+        narrow = Adw.Breakpoint.new(Adw.BreakpointCondition.parse("max-width: 480sp"))
+        narrow.connect("apply", lambda *_: self._set_narrow(True))
+        narrow.connect("unapply", lambda *_: self._set_narrow(False))
+        self.add_breakpoint(narrow)
+
         self.toast_overlay = Adw.ToastOverlay(child=self.stack)
         view = Adw.ToolbarView()
         view.add_top_bar(header)
         view.set_content(self.toast_overlay)
+        view.add_bottom_bar(self.switcher_bar)
+        self.header = header
         self.set_content(view)
         self.show_state()
+
+    def _set_narrow(self, narrow):
+        self._narrow = narrow
+        self._sync_switcher()
+
+    def _sync_switcher(self):
+        tabs = self.app.state == "device"
+        self.header.set_title_widget(self.switcher if tabs and not self._narrow else self.title)
+        self.switcher_bar.set_reveal(tabs and self._narrow)
 
     def show_state(self):
         state, name, detail = self.app.state, self.app.bt_name, self.app.fail_detail
@@ -341,6 +397,7 @@ class MainWindow(Adw.ApplicationWindow):
         elif state == "device":
             self.device_page.refresh_all()
         self.stack.set_visible_child_name(state)
+        self._sync_switcher()
 
     def changed(self, group, prop):
         self.device_page.changed(group, prop)

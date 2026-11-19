@@ -79,7 +79,12 @@ les premiers écouteurs à réduction de bruit.
   bt-notify ; état connu au démarrage = pas de notification), batterie faible (`battery_alert`) : un écouteur sous
   20 % puis sous 10 %, une fois par seuil, réarmé au-dessus de 30 % ; 0 % ignoré (rangé dans le boîtier).
 - `ui/window.py` : pages « aucun écouteur », « connexion… », « impossible de joindre », page des écouteurs
-  (`DevicePage`) : piles gauche / droit / boîtier (+ porté / retiré), contrôle du bruit (boutons liés) et niveau,
+  (`DevicePage`) en ONGLETS (demande de Tof) — État (piles, contrôle du bruit, port), Gestes (tapes, appui long,
+  glisser), Son, Appareil (double connexion, langue, infos) ; `Adw.ViewStack` (classe « final » : porté par un
+  Gtk.Box, `device_page.stack`), sélecteur dans l'en-tête, `Adw.ViewSwitcherBar` en bas sous 480 sp (point de
+  rupture : la fenêtre DOIT avoir une taille minimale, sinon « does not have a minimum size » en boucle) ; onglet
+  caché s'il n'a aucune ligne. Contrôle du bruit = boutons liés sur toute la largeur, textes abrégés (en suffixe
+  d'une ligne, ils élargissaient la fenêtre). Contenu : piles gauche / droit / boîtier (+ porté / retiré), contrôle du bruit (boutons liés) et niveau,
   gestes, son (égaliseur, priorité, faible latence), détection du port, double connexion (+ appareils connus),
   langue des messages, infos. Lignes construites une fois, tenues à jour par `changed(groupe, prop)`, cachées
   tant que les écouteurs n'ont pas donné la valeur ; groupe caché si toutes ses lignes le sont. Code inconnu

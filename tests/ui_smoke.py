@@ -162,16 +162,34 @@ def pas_de_pause_au_demarrage(win):
 
 
 @step
+def onglets(win):
+    page = win.device_page
+    names = [n for n in page.TABS if page.stack.get_page(page.stack.get_child_by_name(n)).get_visible()]
+    check(names == list(page.TABS), "onglets État, Gestes, Son, Appareil")
+    check(win.header.get_title_widget() is win.switcher, "sélecteur d'onglets dans l'en-tête")
+    check(page.stack.get_visible_child_name() == "status" and page.anc_row.get_mapped() and page.left.get_mapped(),
+          "premier onglet : piles et contrôle du bruit")
+
+
+@step
 def lignes_presentes(win):
+    win.device_page.stack.set_visible_child_name("gestures")
+    yield Wait(0.3)
     titles = visible_titles(win, Adw.ComboRow)
     for t in (tr("Double tape, écouteur gauche"), tr("Triple tape, écouteur droit"),
-              tr("Modes parcourus, écouteur gauche"), tr("Glisser sur la tige"), tr("Égaliseur"), tr("Priorité")):
+              tr("Modes parcourus, écouteur gauche"), tr("Glisser sur la tige")):
         check(t in titles, f"ligne « {t} »")
     check(tr("Double tape, écouteur pendant un appel") not in titles, "pas de ligne inventée")
     row = [r for r in find(win, Adw.ComboRow) if r.get_title() == tr("Triple tape, écouteur gauche")][0]
     items = [row.get_model().get_string(i) for i in range(row.get_model().get_n_items())]
     check("4" in items and label("next") in items, "code inconnu « 4 » montré tel quel, à côté des connus")
     check(row.get_selected() == items.index(label("next")), "choix actuel : morceau suivant")
+    win.device_page.stack.set_visible_child_name("sound")
+    yield Wait(0.3)
+    titles = visible_titles(win, Adw.ComboRow)
+    check(tr("Égaliseur") in titles and tr("Priorité") in titles, "onglet Son : égaliseur, priorité")
+    win.device_page.stack.set_visible_child_name("status")
+    yield Wait(0.3)
 
 
 @step
@@ -358,5 +376,7 @@ sys.stderr.flush()
 time.sleep(0.2)
 for line in CRITICALS:
     errors.append("ÉCHEC : avertissement critique de GTK / GLib : " + line)
+if not started:
+    errors.append("ÉCHEC : la fenêtre ne s'est jamais ouverte (exception au démarrage ?)")
 print("\n".join(errors) if errors else "\nAucune erreur.")
 sys.exit(1 if errors else 0)

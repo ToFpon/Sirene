@@ -1,7 +1,7 @@
 """Capture de la fenêtre avec de faux écouteurs 6i (valeurs de Tof), sous Xvfb :
 
     xvfb-run -a -s "-screen 0 1280x1000x24" python3.12 tools/screenshot.py SORTIE.png [--dark] [--empty]
-        [--size=LxH] [--scroll=PIXELS]
+        [--size=LxH] [--scroll=PIXELS] [--tab=status|gestures|sound|device]
 """
 
 import os
@@ -62,8 +62,10 @@ def shoot(win):
 
 
 def ready(win):
+    if "tab" in opts:
+        win.device_page.stack.set_visible_child_name(opts["tab"])
     if "scroll" in opts:
-        GLib.timeout_add(300, lambda: (win.device_page.get_vadjustment().set_value(float(opts["scroll"])), False)[1])
+        GLib.timeout_add(300, lambda: (win.device_page.stack.get_visible_child().get_first_child().get_vadjustment().set_value(float(opts["scroll"])), False)[1])
     GLib.timeout_add(900, shoot, win)
     return False
 
