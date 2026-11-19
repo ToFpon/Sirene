@@ -1,3 +1,10 @@
+sirene (0.1.3~noble1) noble; urgency=medium
+
+  * Le processus s'appelle « sirene » dans le Moniteur système, ps et
+    killall, au lieu de « python3 ».
+
+ -- Tof <nourpon@gmail.com>  Thu, 19 Nov 2026 22:11:49 +0000
+
 sirene (0.1.2~noble1) noble; urgency=medium
 
   * Notifications de connexion et de déconnexion Bluetooth en priorité
