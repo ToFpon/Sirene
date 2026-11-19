@@ -1,3 +1,10 @@
+sirene (0.1.2~noble1) noble; urgency=medium
+
+  * Notifications de connexion et de déconnexion Bluetooth en priorité
+    basse ; la batterie faible reste en priorité normale.
+
+ -- Tof <nourpon@gmail.com>  Thu, 19 Nov 2026 20:30:04 +0000
+
 sirene (0.1.1~noble1) noble; urgency=medium
 
   * Le lancement à l'ouverture de session est activé au premier lancement :
