@@ -15,75 +15,79 @@ msgstr ""
 msgid "Contrôle du bruit : off, cancellation, awareness ou next (pour un raccourci clavier)"
 msgstr ""
 
-#: sirene/app.py:287
+#: sirene/app.py:304
 msgid "Le canal des écouteurs ne répond pas, ou un autre programme l'occupe (OpenFreebuds, MyBuds…). Fermez-le, puis réessayez."
 msgstr ""
 
-#: sirene/app.py:487
+#: sirene/app.py:504
 msgid "Protocole et pilotes"
 msgstr ""
 
-#: sirene/app.py:490
+#: sirene/app.py:507
 msgid "Remerciements"
 msgstr ""
 
-#: sirene/app.py:376
+#: sirene/app.py:156
+msgid "Sirène se lancera à l'ouverture de session (Préférences pour changer)"
+msgstr ""
+
+#: sirene/app.py:393
 msgid "Les écouteurs n'ont pas pris en compte ce réglage"
 msgstr ""
 
-#: sirene/app.py:418 sirene/ui/window.py:322
+#: sirene/app.py:435 sirene/ui/window.py:322
 msgid "Connecté"
 msgstr ""
 
-#: sirene/app.py:418
+#: sirene/app.py:435
 msgid "Déconnecté"
 msgstr ""
 
-#: sirene/app.py:445
+#: sirene/app.py:462
 msgid "G"
 msgstr ""
 
-#: sirene/app.py:445
+#: sirene/app.py:462
 msgid "D"
 msgstr ""
 
-#: sirene/app.py:445 sirene/ui/window.py:197
+#: sirene/app.py:462 sirene/ui/window.py:197
 msgid "Boîtier"
 msgstr ""
 
-#: sirene/app.py:485
+#: sirene/app.py:502
 msgid "Réglages des écouteurs HUAWEI FreeBuds"
 msgstr ""
 
-#: sirene/app.py:462
+#: sirene/app.py:479
 msgid "Afficher Sirène"
 msgstr ""
 
-#: sirene/app.py:462 sirene/ui/window.py:491
+#: sirene/app.py:479 sirene/ui/window.py:491
 msgid "Quitter"
 msgstr ""
 
-#: sirene/app.py:431
+#: sirene/app.py:448
 msgid "Écouteur gauche : {0} %"
 msgstr ""
 
-#: sirene/app.py:431
+#: sirene/app.py:448
 msgid "Écouteur droit : {0} %"
 msgstr ""
 
-#: sirene/app.py:432
+#: sirene/app.py:449
 msgid "Batterie faible"
 msgstr ""
 
-#: sirene/app.py:442 sirene/ui/window.py:496
+#: sirene/app.py:459 sirene/ui/window.py:496
 msgid "Aucun écouteur connecté"
 msgstr ""
 
-#: sirene/app.py:443 sirene/ui/window.py:545
+#: sirene/app.py:460 sirene/ui/window.py:545
 msgid "Connexion à {0}…"
 msgstr ""
 
-#: sirene/app.py:442 sirene/ui/window.py:547
+#: sirene/app.py:459 sirene/ui/window.py:547
 msgid "Impossible de joindre {0}"
 msgstr ""
 

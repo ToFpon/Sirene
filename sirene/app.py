@@ -110,8 +110,21 @@ class SireneApp(Adw.Application):
         self.watcher = self._watcher_factory(self._bt_changed)
         self._bt_seen = {d.address: d.connected for d in self.watcher.devices.values()}
         settings.connect(self._on_setting)
+        self._first_run_autostart()
         self._sync_tray()
         self._pick()
+
+    def _first_run_autostart(self):
+        """Lancement à l'ouverture de session coché d'office au premier lancement de Sirène INSTALLÉE (vu chez Tof :
+        l'option, dans les Préférences, passait inaperçue ; Sirène est faite pour tourner en fond). Une seule fois :
+        décoché ensuite, il le reste. Lancée depuis les sources : rien (essais)."""
+        from . import autostart, notify
+        if settings["autostart_offered"] or not notify.installed():
+            return
+        settings["autostart_offered"] = True
+        if not autostart.enabled():
+            autostart.set_enabled(True)
+            self._autostart_news = True
 
     def do_command_line(self, cmd):
         opts = cmd.get_options_dict()
@@ -137,6 +150,10 @@ class SireneApp(Adw.Application):
             self.window = MainWindow(self)
         self.window.present()
         self._release()
+        if getattr(self, "_autostart_news", False):
+            self._autostart_news = False
+            from .ui.common import toast
+            toast(self.window, tr("Sirène se lancera à l'ouverture de session (Préférences pour changer)"), timeout=8)
 
     def window_closing(self) -> bool:
         """Fenêtre fermée : True = gardée (cachée, Sirène reste en arrière-plan). Seulement s'il y a une barre pour

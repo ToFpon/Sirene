@@ -81,7 +81,9 @@ les premiers écouteurs à réduction de bruit.
   suit le nom UNIQUE de la connexion qui a enregistré l'icône ; rendre le nom « org.kde.StatusNotifierItem-… » ne
   suffit pas. L'icône a donc SA connexion au bus de session (`Tray.show`), fermée par `hide` : l'icône s'en va
   tout de suite. Testé : la fausse barre d'ui_smoke vérifie que ce nom unique disparaît (échoue sur l'ancien code). `--background` (lancement
-  à l'ouverture de session, `autostart.py` : ~/.config/autostart, `sirene --background` installé, sinon ce
+  à l'ouverture de session — COCHÉ D'OFFICE au premier lancement de Sirène installée (`_first_run_autostart`,
+  réglage `autostart_offered`, une seule fois, toast dans la fenêtre ; vu chez Tof : l'option des Préférences
+  passait inaperçue, Sirène ne démarrait pas avec la session), `autostart.py` : ~/.config/autostart, `sirene --background` installé, sinon ce
   Python + bin/sirene) : pas de fenêtre. Icônes `data/icons/hicolor` (index.theme OBLIGATOIRE, cf. Ithaca) ;
   couleur corail (Odysseus bleu, Ithaca violet, Nausicaa orange, Calypso turquoise, Télémaque vert).
 - Notifications (`sirene/notify.py`) : PIÈGE vu chez Tof (aucune notification) — GNOME Shell REFUSE en silence les
