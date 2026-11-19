@@ -8,11 +8,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: sirene/app.py:42
+#: sirene/app.py:54
 msgid "Démarrer sans fenêtre, dans la barre du haut"
 msgstr "Start without a window, in the top bar"
 
-#: sirene/app.py:227
+#: sirene/app.py:246
 msgid ""
 "Le canal des écouteurs ne répond pas, ou un autre programme l'occupe "
 "(OpenFreebuds, MyBuds…). Fermez-le, puis réessayez."
@@ -20,71 +20,71 @@ msgstr ""
 "The earphones' channel does not answer, or another program is using it "
 "(OpenFreebuds, MyBuds…). Close it, then try again."
 
-#: sirene/app.py:424
+#: sirene/app.py:444
 msgid "Protocole et pilotes"
 msgstr "Protocol and drivers"
 
-#: sirene/app.py:427
+#: sirene/app.py:447
 msgid "Remerciements"
 msgstr "Thanks"
 
-#: sirene/app.py:313
+#: sirene/app.py:333
 msgid "Les écouteurs n'ont pas pris en compte ce réglage"
 msgstr "The earphones did not take this setting"
 
-#: sirene/app.py:355 sirene/ui/window.py:311
+#: sirene/app.py:375 sirene/ui/window.py:311
 msgid "Connecté"
 msgstr "Connected"
 
-#: sirene/app.py:355
+#: sirene/app.py:375
 msgid "Déconnecté"
 msgstr "Disconnected"
 
-#: sirene/app.py:382
+#: sirene/app.py:402
 msgid "G"
 msgstr "L"
 
-#: sirene/app.py:382
+#: sirene/app.py:402
 msgid "D"
 msgstr "R"
 
-#: sirene/app.py:382 sirene/ui/window.py:190
+#: sirene/app.py:402 sirene/ui/window.py:190
 msgid "Boîtier"
 msgstr "Case"
 
-#: sirene/app.py:422
+#: sirene/app.py:442
 msgid "Réglages des écouteurs HUAWEI FreeBuds"
 msgstr "Settings for HUAWEI FreeBuds earphones"
 
-#: sirene/app.py:399
+#: sirene/app.py:419
 msgid "Afficher Sirène"
 msgstr "Show Sirène"
 
-#: sirene/app.py:399 sirene/ui/window.py:339
+#: sirene/app.py:419 sirene/ui/window.py:339
 msgid "Quitter"
 msgstr "Quit"
 
-#: sirene/app.py:368
+#: sirene/app.py:388
 msgid "Écouteur gauche : {0} %"
 msgstr "Left earbud: {0} %"
 
-#: sirene/app.py:368
+#: sirene/app.py:388
 msgid "Écouteur droit : {0} %"
 msgstr "Right earbud: {0} %"
 
-#: sirene/app.py:369
+#: sirene/app.py:389
 msgid "Batterie faible"
 msgstr "Low battery"
 
-#: sirene/app.py:379 sirene/ui/window.py:344
+#: sirene/app.py:399 sirene/ui/window.py:344
 msgid "Aucun écouteur connecté"
 msgstr "No earphones connected"
 
-#: sirene/app.py:380 sirene/ui/window.py:393
+#: sirene/app.py:400 sirene/ui/window.py:393
 msgid "Connexion à {0}…"
 msgstr "Connecting to {0}…"
 
-#: sirene/app.py:379 sirene/ui/window.py:395
+#: sirene/app.py:399 sirene/ui/window.py:395
 msgid "Impossible de joindre {0}"
 msgstr "Cannot reach {0}"
 
@@ -359,11 +359,23 @@ msgstr "Start at login"
 msgid "Sirène démarre sans fenêtre, dans la barre du haut"
 msgstr "Sirène starts without a window, in the top bar"
 
-#: sirene/ui/preferences.py:58
+#: sirene/ui/preferences.py:54
+msgid "Icône seulement avec les écouteurs"
+msgstr "Icon only with the earphones"
+
+#: sirene/ui/preferences.py:56
+msgid ""
+"Sirène attend en silence et n'apparaît dans la barre du haut que pendant que"
+" vos écouteurs sont connectés"
+msgstr ""
+"Sirène waits quietly and only appears in the top bar while your earphones "
+"are connected"
+
+#: sirene/ui/preferences.py:64
 msgid "Fonctionnalités"
 msgstr "Features"
 
-#: sirene/ui/preferences.py:60
+#: sirene/ui/preferences.py:66
 msgid ""
 "Chaque fonctionnalité s'active ou se coupe tout de suite, sans redémarrer "
 "Sirène"

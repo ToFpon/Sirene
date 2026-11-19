@@ -34,6 +34,18 @@ DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__
 RETRY_S = (2, 5, 10)            # écouteurs tout juste connectés : leur canal n'est pas toujours prêt
 
 
+def tray_bar_present() -> bool:
+    """Une barre AppIndicator (org.kde.StatusNotifierWatcher) tourne-t-elle ?"""
+    try:
+        bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+        reply = bus.call_sync("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus", "NameHasOwner",
+                              GLib.Variant("(s)", ("org.kde.StatusNotifierWatcher",)), GLib.VariantType("(b)"),
+                              Gio.DBusCallFlags.NONE, 1000, None)
+        return reply.unpack()[0]
+    except GLib.Error:
+        return False
+
+
 class SireneApp(Adw.Application):
     def __init__(self, watcher=None, connect=rfcomm_connect, autopause=None, timeout=None):
         super().__init__(application_id=APP_ID, flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
@@ -99,7 +111,7 @@ class SireneApp(Adw.Application):
 
     def do_command_line(self, cmd):
         background = cmd.get_options_dict().contains("background")
-        if background and self.window is None and self.tray is not None:
+        if background and self.window is None and features.enabled("tray"):
             self._hold()                        # ouverture de session : l'icône seulement
         else:
             self.activate()
@@ -116,8 +128,9 @@ class SireneApp(Adw.Application):
         self._release()
 
     def window_closing(self) -> bool:
-        """Fenêtre fermée : True = gardée (cachée, Sirène reste dans la barre)."""
-        if self.tray is not None and self.tray.registered:
+        """Fenêtre fermée : True = gardée (cachée, Sirène reste en arrière-plan). Seulement s'il y a une barre pour
+        l'icône (l'icône elle-même peut être cachée tant que les écouteurs sont absents)."""
+        if features.enabled("tray") and (self.tray is not None and self.tray.registered or tray_bar_present()):
             self.window.set_visible(False)
             self._hold()
             return True
@@ -134,16 +147,22 @@ class SireneApp(Adw.Application):
             self._held = False
 
     def _on_setting(self, key, _value):
-        if key == "features":
+        if key in ("features", "tray_only_connected"):
             self._sync_tray()
             self._sync_volume()
 
     def _sync_tray(self):
+        """Icône montrée si la fonctionnalité est active — et, par défaut (« tray_only_connected », demande de Tof),
+        seulement pendant que des écouteurs pris en charge sont connectés : Sirène tourne dès l'ouverture de session
+        (elle ne coûte rien : signaux D-Bus, aucune interrogation) mais ne se montre qu'avec les écouteurs."""
         if features.enabled("tray"):
             if self.tray is None:
                 from .tray import Tray
                 self.tray = Tray(self)
-            self.tray.show()
+            if self.bt is not None or not settings["tray_only_connected"]:
+                self.tray.show()
+            else:
+                self.tray.hide()
         elif self.tray is not None:
             self.tray.hide()
             self.tray = None
@@ -255,6 +274,7 @@ class SireneApp(Adw.Application):
     def _set_state(self, state):
         self.state = state
         self._sync_volume()
+        self._sync_tray()
         if self.window is not None:
             self.window.show_state()
         if self.tray is not None:

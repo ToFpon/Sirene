@@ -51,6 +51,12 @@ class PreferencesWindow(Adw.PreferencesWindow):
                              subtitle=tr("Sirène démarre sans fenêtre, dans la barre du haut"))
         auto.connect("notify::active", lambda r, *_: autostart.set_enabled(r.get_active()))
         session.add(auto)
+        only = Adw.SwitchRow(title=tr("Icône seulement avec les écouteurs"),
+                             active=settings["tray_only_connected"],
+                             subtitle=tr("Sirène attend en silence et n'apparaît dans la barre du haut que pendant "
+                                         "que vos écouteurs sont connectés"))
+        only.connect("notify::active", lambda r, *_: settings.__setitem__("tray_only_connected", r.get_active()))
+        session.add(only)
         page.add(session)
         return page
 

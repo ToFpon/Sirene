@@ -17,6 +17,7 @@ DEFAULTS: dict[str, Any] = {
     "window_width": 560,
     "window_height": 760,
     "window_maximized": False,
+    "tray_only_connected": True,    # icône de la barre seulement pendant que les écouteurs sont connectés
     "features": {},                 # fonctionnalités activées / désactivées (voir features.py)
 }
 

@@ -134,6 +134,7 @@ threading.Thread(target=_tee, daemon=True).start()
 @step
 def sans_ecouteurs(win):
     check(win.stack.get_visible_child_name() == "none", "aucun écouteur : page d'attente")
+    check(app.tray is not None and not app.tray.active, "aucun écouteur : pas d'icône dans la barre (réglage par défaut)")
 
 
 @step
@@ -323,6 +324,7 @@ def deconnexion(win):
     yield Wait(0.4)
     check(win.stack.get_visible_child_name() == "none" and app.device is None and not dev.alive,
           "écouteurs partis : canal fermé, page d'attente")
+    check(not app.tray.active, "écouteurs partis : l'icône s'en va")
 
 
 @step

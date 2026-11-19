@@ -72,7 +72,11 @@ les premiers écouteurs à réduction de bruit.
   + dbusmenu de Télémaque / Ithaca, généralisé (`app.tray_items()` / `tray_text()` / `tray_activate()`, entrées
   radio pour le contrôle du bruit, `update()` republie si le menu a changé). Bulle et première ligne :
   « FreeBuds 6i — G 100 % · D 100 % · Boîtier 67 % » (un écouteur à 0 % = rangé, omis). Fermer la fenêtre
-  la CACHE si une barre a accepté l'icône (`window_closing`, `hold()`), sinon quitte. `--background` (lancement
+  la CACHE s'il y a une barre (icône acceptée, ou org.kde.StatusNotifierWatcher présent : `tray_bar_present`),
+  sinon quitte. Réglage `tray_only_connected` (vrai par défaut, demande de Tof : « démarrer seulement à la
+  connexion des écouteurs ») : Sirène tourne dès l'ouverture de session (aucune interrogation, rien ne coûte), mais
+  l'icône n'apparaît que pendant que des écouteurs pris en charge sont connectés (`_sync_tray`, à chaque état).
+  Un vrai démarrage « à la connexion » demanderait de toute façon un programme qui écoute BlueZ. `--background` (lancement
   à l'ouverture de session, `autostart.py` : ~/.config/autostart, `sirene --background` installé, sinon ce
   Python + bin/sirene) : pas de fenêtre. Icônes `data/icons/hicolor` (index.theme OBLIGATOIRE, cf. Ithaca) ;
   couleur corail (Odysseus bleu, Ithaca violet, Nausicaa orange, Calypso turquoise, Télémaque vert).

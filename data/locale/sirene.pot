@@ -7,79 +7,79 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: sirene/app.py:42
+#: sirene/app.py:54
 msgid "Démarrer sans fenêtre, dans la barre du haut"
 msgstr ""
 
-#: sirene/app.py:227
+#: sirene/app.py:246
 msgid "Le canal des écouteurs ne répond pas, ou un autre programme l'occupe (OpenFreebuds, MyBuds…). Fermez-le, puis réessayez."
 msgstr ""
 
-#: sirene/app.py:424
+#: sirene/app.py:444
 msgid "Protocole et pilotes"
 msgstr ""
 
-#: sirene/app.py:427
+#: sirene/app.py:447
 msgid "Remerciements"
 msgstr ""
 
-#: sirene/app.py:313
+#: sirene/app.py:333
 msgid "Les écouteurs n'ont pas pris en compte ce réglage"
 msgstr ""
 
-#: sirene/app.py:355 sirene/ui/window.py:311
+#: sirene/app.py:375 sirene/ui/window.py:311
 msgid "Connecté"
 msgstr ""
 
-#: sirene/app.py:355
+#: sirene/app.py:375
 msgid "Déconnecté"
 msgstr ""
 
-#: sirene/app.py:382
+#: sirene/app.py:402
 msgid "G"
 msgstr ""
 
-#: sirene/app.py:382
+#: sirene/app.py:402
 msgid "D"
 msgstr ""
 
-#: sirene/app.py:382 sirene/ui/window.py:190
+#: sirene/app.py:402 sirene/ui/window.py:190
 msgid "Boîtier"
 msgstr ""
 
-#: sirene/app.py:422
+#: sirene/app.py:442
 msgid "Réglages des écouteurs HUAWEI FreeBuds"
 msgstr ""
 
-#: sirene/app.py:399
+#: sirene/app.py:419
 msgid "Afficher Sirène"
 msgstr ""
 
-#: sirene/app.py:399 sirene/ui/window.py:339
+#: sirene/app.py:419 sirene/ui/window.py:339
 msgid "Quitter"
 msgstr ""
 
-#: sirene/app.py:368
+#: sirene/app.py:388
 msgid "Écouteur gauche : {0} %"
 msgstr ""
 
-#: sirene/app.py:368
+#: sirene/app.py:388
 msgid "Écouteur droit : {0} %"
 msgstr ""
 
-#: sirene/app.py:369
+#: sirene/app.py:389
 msgid "Batterie faible"
 msgstr ""
 
-#: sirene/app.py:379 sirene/ui/window.py:344
+#: sirene/app.py:399 sirene/ui/window.py:344
 msgid "Aucun écouteur connecté"
 msgstr ""
 
-#: sirene/app.py:380 sirene/ui/window.py:393
+#: sirene/app.py:400 sirene/ui/window.py:393
 msgid "Connexion à {0}…"
 msgstr ""
 
-#: sirene/app.py:379 sirene/ui/window.py:395
+#: sirene/app.py:399 sirene/ui/window.py:395
 msgid "Impossible de joindre {0}"
 msgstr ""
 
@@ -335,11 +335,19 @@ msgstr ""
 msgid "Sirène démarre sans fenêtre, dans la barre du haut"
 msgstr ""
 
-#: sirene/ui/preferences.py:58
+#: sirene/ui/preferences.py:54
+msgid "Icône seulement avec les écouteurs"
+msgstr ""
+
+#: sirene/ui/preferences.py:56
+msgid "Sirène attend en silence et n'apparaît dans la barre du haut que pendant que vos écouteurs sont connectés"
+msgstr ""
+
+#: sirene/ui/preferences.py:64
 msgid "Fonctionnalités"
 msgstr ""
 
-#: sirene/ui/preferences.py:60
+#: sirene/ui/preferences.py:66
 msgid "Chaque fonctionnalité s'active ou se coupe tout de suite, sans redémarrer Sirène"
 msgstr ""
 
