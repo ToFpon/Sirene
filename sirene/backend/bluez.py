@@ -18,13 +18,14 @@ class BtDevice:
     name: str
     connected: bool
     path: str
+    icon: str = ""                  # « audio-headphones », « input-mouse »… (BlueZ)
 
 
 def _from_props(path: str, props: dict) -> Optional[BtDevice]:
     if "Address" not in props:
         return None
     return BtDevice(props["Address"], props.get("Alias") or props.get("Name") or props["Address"],
-                    bool(props.get("Connected")), path)
+                    bool(props.get("Connected")), path, props.get("Icon") or "")
 
 
 def _managed(bus) -> dict:

@@ -75,7 +75,11 @@ les premiers écouteurs à réduction de bruit.
   à l'ouverture de session, `autostart.py` : ~/.config/autostart, `sirene --background` installé, sinon ce
   Python + bin/sirene) : pas de fenêtre. Icônes `data/icons/hicolor` (index.theme OBLIGATOIRE, cf. Ithaca) ;
   couleur corail (Odysseus bleu, Ithaca violet, Nausicaa orange, Calypso turquoise, Télémaque vert).
-- Notifications (Gio.Notification) : connexion / déconnexion de TOUT appareil Bluetooth (`notify_connect`, comme
+- Notifications (`sirene/notify.py`) : PIÈGE vu chez Tof (aucune notification) — GNOME Shell REFUSE en silence les
+  Gio.Notification d'une application sans .desktop installé (lookup_app(<id>.desktop) → InvalidAppError). Sans
+  lanceur installé : org.freedesktop.Notifications (comme notify-send de bt-notify), remplacement par identifiant ;
+  installé (`data/io.github.sirene.Sirene.desktop`) : Gio.Notification. Testé : `test_notify` (faux serveur).
+  Contenu : connexion / déconnexion de TOUT appareil Bluetooth (`notify_connect`, comme
   bt-notify ; état connu au démarrage = pas de notification), batterie faible (`battery_alert`) : un écouteur sous
   20 % puis sous 10 %, une fois par seuil, réarmé au-dessus de 30 % ; 0 % ignoré (rangé dans le boîtier).
 - `ui/window.py` : pages « aucun écouteur », « connexion… », « impossible de joindre », page des écouteurs
@@ -105,7 +109,7 @@ les premiers écouteurs à réduction de bruit.
 
 ```sh
 python3.12 -m unittest discover -s tests        # trames + fonctions contre de faux écouteurs (socketpair)
-dbus-run-session -- python3.12 -m unittest tests.test_autopause   # pause par MPRIS (faux lecteurs)
+dbus-run-session -- python3.12 -m unittest discover -s tests       # + MPRIS (faux lecteurs), notifications
 dbus-run-session -- xvfb-run -a python3.12 tests/ui_smoke.py      # + barre du haut (fausse barre) ; sans bus : sautée
 xvfb-run -a python3.12 tests/ui_smoke.py         # interface + faux BlueZ + faux 6i : « Aucune erreur. »
 LANGUAGE=en … ; LANGUAGE=de …

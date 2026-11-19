@@ -55,6 +55,7 @@ class SireneApp(Adw.Application):
         self._retry_id = 0
         self._worn = None
         self.tray = None
+        self._notifier = None
         self._held = False
         self._bt_seen: dict[str, bool] = {}     # adresse → connecté (notifications)
         self._low: dict[str, int] = {}          # écouteur → dernier seuil signalé (20, 10)
@@ -310,15 +311,20 @@ class SireneApp(Adw.Application):
 
     # --- notifications ---
 
+    def notify(self, nid, title, body, icon):
+        if self._notifier is None:
+            from .notify import Notifier
+            self._notifier = Notifier(self)
+        self._notifier.send(nid, title, body, icon)
+
     def _notify_bt(self, d):
         before = self._bt_seen.get(d.address)
         self._bt_seen[d.address] = d.connected
         if before == d.connected or (before is None and not d.connected) or not features.enabled("notify_connect"):
             return
-        n = Gio.Notification.new(d.name)
-        n.set_body(tr("Connecté") if d.connected else tr("Déconnecté"))
-        n.set_icon(Gio.ThemedIcon.new("bluetooth-active-symbolic" if d.connected else "bluetooth-disabled-symbolic"))
-        self.send_notification("bt-" + d.address, n)
+        # comme bt-notify : l'icône de l'appareil (BlueZ « Icon ») à la connexion, Bluetooth barré au départ
+        self.notify("bt-" + d.address, d.name, tr("Connecté") if d.connected else tr("Déconnecté"),
+                    (d.icon or "bluetooth") if d.connected else "bluetooth-disabled")
 
     def _battery_alert(self, side, level):
         if not isinstance(level, int) or level <= 0:    # 0 : écouteur rangé dans le boîtier (vu sur les 6i)
@@ -330,11 +336,8 @@ class SireneApp(Adw.Application):
             if level <= limit:
                 if self._low.get(side, 100) > limit and features.enabled("battery_alert"):
                     self._low[side] = limit
-                    n = Gio.Notification.new(tr("Batterie faible"))
                     text = tr("Écouteur gauche : {0} %") if side == "left" else tr("Écouteur droit : {0} %")
-                    n.set_body(text.format(level))
-                    n.set_icon(Gio.ThemedIcon.new("battery-caution-symbolic"))
-                    self.send_notification("battery-" + side, n)
+                    self.notify("battery-" + side, tr("Batterie faible"), text.format(level), "battery-caution")
                 break
 
     # --- icône de la barre ---

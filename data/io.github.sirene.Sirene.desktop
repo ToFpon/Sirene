@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Sirène
+Comment=Settings for HUAWEI FreeBuds earphones
+Comment[fr]=Réglages des écouteurs HUAWEI FreeBuds
+Comment[de]=Einstellungen für HUAWEI-FreeBuds-Ohrhörer
+Exec=sirene
+Icon=io.github.sirene.Sirene
+Terminal=false
+Categories=GTK;GNOME;Settings;HardwareSettings;
+Keywords=Bluetooth;earbuds;earphones;headphones;FreeBuds;Huawei;ANC;
+StartupNotify=true

@@ -59,7 +59,7 @@ pause = FakePause()
 app = SireneApp(watcher=lambda cb: watchers.append(FakeWatcher(cb)) or watchers[-1], connect=connect,
                 autopause=pause, timeout=0.5)
 notified = {}
-app.send_notification = lambda nid, n: notified.__setitem__(nid, n)
+app.notify = lambda nid, title, body, icon: notified.__setitem__(nid, (title, body, icon))
 
 # Fausse barre du haut (org.kde.StatusNotifierWatcher), sur sa propre connexion au bus de session
 SNW_XML = """<node><interface name="org.kde.StatusNotifierWatcher">
@@ -153,7 +153,8 @@ def connexion(win):
 @step
 def notification_de_connexion(win):
     n = notified.get("bt-CC:B0:A8:AB:43:43")
-    check(n is not None, "notification « connecté » (comme bt-notify)")
+    check(n is not None and n[1] == tr("Connecté") and n[2] == "audio-headphones",
+          "notification « connecté » avec l'icône de l'appareil (comme bt-notify)")
 
 
 @step

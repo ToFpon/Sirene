@@ -102,7 +102,7 @@ class FakeWatcher:
 
     def announce(self, connected, name="HUAWEI FreeBuds 6i"):
         from sirene.backend.bluez import BtDevice
-        d = BtDevice(ADDR, name, connected, "/org/bluez/hci0/dev_" + ADDR.replace(":", "_"))
+        d = BtDevice(ADDR, name, connected, "/org/bluez/hci0/dev_" + ADDR.replace(":", "_"), "audio-headphones")
         self.devices[d.path] = d
         self.on_change(d)
 
