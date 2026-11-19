@@ -1,3 +1,11 @@
+sirene (0.1.4~noble1) noble; urgency=medium
+
+  * Notifications de connexion Bluetooth en priorité normale et
+    éphémères, comme notify-send -e : affichées, puis pas gardées dans la
+    liste (en priorité basse, GNOME ne les affichait plus).
+
+ -- Tof <nourpon@gmail.com>  Thu, 19 Nov 2026 22:56:41 +0000
+
 sirene (0.1.3~noble1) noble; urgency=medium
 
   * Le processus s'appelle « sirene » dans le Moniteur système, ps et

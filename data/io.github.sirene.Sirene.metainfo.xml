@@ -71,6 +71,13 @@
   </requires>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.1.4" date="2026-11-19">
+      <description>
+        <ul>
+          <li>Bluetooth connection notifications are shown again, with normal priority, and are not kept in the list</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.1.3" date="2026-11-19">
       <description>
         <ul>
