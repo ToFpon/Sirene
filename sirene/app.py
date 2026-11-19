@@ -508,10 +508,23 @@ class SireneApp(Adw.Application):
         about.present()
 
 
+def _process_name(name: str):
+    """Nom du processus pour le noyau : « sirene » dans le Moniteur système, ps, killall, au lieu de « python3 »
+    (le lanceur est `python3 -c …`). Repris d'Odysseus / Télémaque ; demande de Tof."""
+    try:
+        import ctypes
+        libc = ctypes.CDLL(None, use_errno=True)
+        libc.prctl(15, ctypes.c_char_p(name.encode()[:15]), 0, 0, 0)     # 15 = PR_SET_NAME
+    except (OSError, AttributeError):
+        pass
+
+
 def main(argv=None) -> int:
     if "--version" in (argv or sys.argv[1:]):
         print(f"{APP_NAME} {VERSION}")
         return 0
     if os.environ.get("SIRENE_DEBUG"):
         logging.basicConfig(level=logging.DEBUG)
+    _process_name("sirene")
+    GLib.set_prgname(APP_ID)
     return SireneApp().run(argv if argv is not None else sys.argv)

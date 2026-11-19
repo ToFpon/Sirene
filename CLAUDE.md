@@ -130,6 +130,9 @@ les premiers écouteurs à réduction de bruit.
   (confirmation). « Cet ordinateur » = adresse d'un de NOS adaptateurs (`bluez.Watcher.adapters`) : ni
   Déconnecter ni Oublier (on se couperait des écouteurs).
 
+- Nom du processus : `app._process_name` (prctl PR_SET_NAME) → « sirene » dans le Moniteur système, ps, killall
+  (sinon « python3 », le lanceur étant `python3 -c …` ; demande de Tof, repris d'Odysseus). `GLib.set_prgname(APP_ID)`.
+
 ## Port des écouteurs et auto-pause (vu chez Tof, novembre 2026)
 
 - Trame 2B25 : p1 = gauche, p2 = droit (01 porté, 00 retiré). 7i : y répondent sur demande et l'annoncent pour
