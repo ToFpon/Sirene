@@ -166,6 +166,30 @@ class DeviceTest(unittest.TestCase):
         self.assertIn(write.to_bytes(), self.fake.sent)
         dev.stop()
 
+    def test_dual_connect_list_and_change_event(self):
+        """Liste des appareils (une trame 2B31 chacun), puis 2B36 « changé » → relue dans le fil de travail
+        (vu chez Tof : la relecture plantait, DualConnect.init appelé sans l'appareil)."""
+        self.fake.answer(Packet.read(b"\x2b\x2f", [1]), Packet(b"\x2b\x2f", [(1, 1)]))
+
+        def row(index, mac, name, state, preferred):
+            return Packet(b"\x2b\x31", [(2, 2), (3, index), (4, bytes.fromhex(mac)), (5, state),
+                                        (7, preferred), (9, name.encode())])
+        listing = [row(0, "2b3c1292a0a8", "zorin-tof", 9, 1), row(1, "aabbccddeeff", "Téléphone", 0, 0)]
+        self.fake.answer(Packet(b"\x2b\x31", [(1, b"")]), *listing)
+        dev, _ = start([h.DualConnect(auto_connect=False)], self.fake)
+        self.assertIs(dev.get("dual_connect", "enabled"), True)
+        devices = dev.get("dual_connect", "devices")
+        self.assertEqual(devices["2b3c1292a0a8"]["name"], "zorin-tof")
+        self.assertTrue(devices["2b3c1292a0a8"]["playing"])
+        self.assertFalse(devices["aabbccddeeff"]["connected"])
+        self.assertEqual(dev.get("dual_connect", "preferred"), "2b3c1292a0a8")
+
+        listing[1] = row(1, "aabbccddeeff", "Téléphone", 1, 0)                         # le téléphone arrive
+        self.fake.answer(Packet(b"\x2b\x31", [(1, b"")]), *listing)
+        self.fake.push(Packet(b"\x2b\x36", [(1, 1)]))
+        self.assertTrue(wait_for(lambda: dev.get("dual_connect", "devices")["aabbccddeeff"]["connected"]))
+        dev.stop()
+
     def test_silent_handler_does_not_block_others(self):
         """Une fonction sans réponse est notée, les suivantes démarrent quand même."""
         self.fake.answer(GET_ANC, bytes.fromhex("5a0007002b2a010203015043"))

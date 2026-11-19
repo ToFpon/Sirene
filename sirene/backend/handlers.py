@@ -583,7 +583,7 @@ class DualConnect(Handler):
 
     def on_packet(self, dev, pkt):
         if pkt.cmd == DC_CHANGED:
-            dev.later(self.init)                    # relire, hors du fil de lecture
+            dev.later(lambda: self.init(dev))      # relire, hors du fil de lecture
         elif pkt.cmd == DC_ENABLED_READ:
             if pkt.byte(1) is not None:
                 dev.put("dual_connect", "enabled", pkt.byte(1) == 1)
@@ -618,7 +618,7 @@ class DualConnect(Handler):
             dev.send(Packet(DC_EXEC, [(DC_UNPAIR, bytes.fromhex(mac))]))
         else:
             raise KeyError(prop)
-        dev.later(self.init)
+        dev.later(lambda: self.init(dev))
 
 
 def as_text(value) -> str:
