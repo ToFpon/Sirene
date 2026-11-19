@@ -26,6 +26,17 @@ FEATURES = [
             tr("Les lecteurs qui jouaient se mettent en pause quand on retire un écouteur, et reprennent quand "
                "on le remet (seulement ceux que Sirène a mis en pause)"),
             "media-playback-pause-symbolic"),
+    Feature("tray", tr("Icône dans la barre du haut"),
+            tr("Batterie et contrôle du bruit à portée de clic ; fermer la fenêtre laisse Sirène en arrière-plan "
+               "(extension AppIndicator, présente sur Zorin et Ubuntu)"),
+            "view-app-grid-symbolic"),
+    Feature("notify_connect", tr("Prévenir des connexions Bluetooth"),
+            tr("Une notification quand un appareil Bluetooth se connecte ou se déconnecte (écouteurs, souris, "
+               "téléphone…), comme bt-notify"),
+            "bluetooth-active-symbolic"),
+    Feature("battery_alert", tr("Prévenir quand la batterie est faible"),
+            tr("Une notification quand un écouteur passe sous 20 %, puis sous 10 %"),
+            "battery-caution-symbolic"),
 ]
 
 BY_ID = {f.id: f for f in FEATURES}

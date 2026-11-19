@@ -19,7 +19,8 @@ les premiers écouteurs à réduction de bruit.
   ui/common, préférences) reprise de Télémaque.
 - Dialogues : de vraies fenêtres (`common.AlertDialog`, `common.DialogWindow`, `Adw.PreferencesWindow`,
   `Adw.AboutWindow`). Thème du système : `data/base.css` ne fait que de la mise en page.
-- Chaque fonctionnalité facultative est dans `sirene/features.py` (auto_pause) et se consulte au moment de l'usage.
+- Chaque fonctionnalité facultative est dans `sirene/features.py` (auto_pause, tray, notify_connect, battery_alert)
+  et se consulte au moment de l'usage.
 - Toute fonction passée à `idle_add` / `timeout_add` renvoie False (sauf répétition voulue).
 - Reprise d'OpenFreebuds (melianmiko/OpenFreebuds, GPL-3.0 ; FreeBuds 7i : pull request #135 de vicrodh,
   fork vicrodh/OpenFreebuds, branche feature/freebuds-7i) : protocole et pilotes réécrits, à créditer dans
@@ -66,6 +67,17 @@ les premiers écouteurs à réduction de bruit.
 - `backend/autopause.py` : MPRIS, la logique de lola-autopause.sh (lecteur par lecteur, seuls ceux que nous avons
   mis en pause reprennent), appels D-Bus dans un fil. Retrait = `state.in_ear` vrai → faux (les deux portés →
   un retiré), seulement après le démarrage.
+- Arrière-plan et barre du haut (fonctionnalité `tray`, active par défaut) : `sirene/tray.py` = StatusNotifierItem
+  + dbusmenu de Télémaque / Ithaca, généralisé (`app.tray_items()` / `tray_text()` / `tray_activate()`, entrées
+  radio pour le contrôle du bruit, `update()` republie si le menu a changé). Bulle et première ligne :
+  « FreeBuds 6i — G 100 % · D 100 % · Boîtier 67 % » (un écouteur à 0 % = rangé, omis). Fermer la fenêtre
+  la CACHE si une barre a accepté l'icône (`window_closing`, `hold()`), sinon quitte. `--background` (lancement
+  à l'ouverture de session, `autostart.py` : ~/.config/autostart, `sirene --background` installé, sinon ce
+  Python + bin/sirene) : pas de fenêtre. Icônes `data/icons/hicolor` (index.theme OBLIGATOIRE, cf. Ithaca) ;
+  couleur corail (Odysseus bleu, Ithaca violet, Nausicaa orange, Calypso turquoise, Télémaque vert).
+- Notifications (Gio.Notification) : connexion / déconnexion de TOUT appareil Bluetooth (`notify_connect`, comme
+  bt-notify ; état connu au démarrage = pas de notification), batterie faible (`battery_alert`) : un écouteur sous
+  20 % puis sous 10 %, une fois par seuil, réarmé au-dessus de 30 % ; 0 % ignoré (rangé dans le boîtier).
 - `ui/window.py` : pages « aucun écouteur », « connexion… », « impossible de joindre », page des écouteurs
   (`DevicePage`) : piles gauche / droit / boîtier (+ porté / retiré), contrôle du bruit (boutons liés) et niveau,
   gestes, son (égaliseur, priorité, faible latence), détection du port, double connexion (+ appareils connus),
@@ -89,6 +101,7 @@ les premiers écouteurs à réduction de bruit.
 ```sh
 python3.12 -m unittest discover -s tests        # trames + fonctions contre de faux écouteurs (socketpair)
 dbus-run-session -- python3.12 -m unittest tests.test_autopause   # pause par MPRIS (faux lecteurs)
+dbus-run-session -- xvfb-run -a python3.12 tests/ui_smoke.py      # + barre du haut (fausse barre) ; sans bus : sautée
 xvfb-run -a python3.12 tests/ui_smoke.py         # interface + faux BlueZ + faux 6i : « Aucune erreur. »
 LANGUAGE=en … ; LANGUAGE=de …
 python3 -m pyflakes sirene tests tools
@@ -108,7 +121,8 @@ sable : les essais réels sont faits par Tof.
 2. Essai réel de `sirene.probe` sur les 6i de Tof (puis les 7i à Noël).
 3. FAIT (0.0.1, à essayer chez Tof) : interface, suivi de BlueZ, pause au retrait par MPRIS.
    Reste : égaliseur personnalisé (bandes), actions de la double connexion (connecter, oublier, préféré).
-4. Icône de la barre avec la batterie, arrière-plan, alerte batterie faible, action à la connexion, raccourcis
+4. FAIT (0.0.2) : icône de la barre (batterie, contrôle du bruit), arrière-plan, lancement à l'ouverture de
+   session, notifications de connexion, alerte batterie faible. Reste : action à la connexion, raccourcis
    globaux (X11).
-5. Reprise de `bt-notify.sh` : notifications de connexion et affichage du volume.
+5. Reprise de `bt-notify.sh` : affichage du volume (extension custom-osd de Tof : gsettings showosd).
 6. Paquet, PPA, site.

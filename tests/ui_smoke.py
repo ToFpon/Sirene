@@ -23,7 +23,7 @@ import gi  # noqa: E402
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Adw, GLib, Gtk  # noqa: E402
+from gi.repository import Adw, Gio, GLib, Gtk  # noqa: E402
 
 from fake_buds import FakeWatcher, buds_6i  # noqa: E402
 from sirene.app import SireneApp  # noqa: E402
@@ -58,6 +58,25 @@ watchers = []
 pause = FakePause()
 app = SireneApp(watcher=lambda cb: watchers.append(FakeWatcher(cb)) or watchers[-1], connect=connect,
                 autopause=pause, timeout=0.5)
+notified = {}
+app.send_notification = lambda nid, n: notified.__setitem__(nid, n)
+
+# Fausse barre du haut (org.kde.StatusNotifierWatcher), sur sa propre connexion au bus de session
+SNW_XML = """<node><interface name="org.kde.StatusNotifierWatcher">
+  <method name="RegisterStatusNotifierItem"><arg name="service" type="s" direction="in"/></method>
+</interface></node>"""
+snw_registered = []
+try:
+    _snw = Gio.DBusConnection.new_for_address_sync(
+        Gio.dbus_address_get_for_bus_sync(Gio.BusType.SESSION, None),
+        Gio.DBusConnectionFlags.AUTHENTICATION_CLIENT | Gio.DBusConnectionFlags.MESSAGE_BUS_CONNECTION, None, None)
+    _snw.register_object("/StatusNotifierWatcher", Gio.DBusNodeInfo.new_for_xml(SNW_XML).interfaces[0],
+                         lambda c, s, p, i, m, params, inv: (snw_registered.append(params.unpack()[0]),
+                                                             inv.return_value(None)), None, None)
+    _snw.call_sync("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus", "RequestName",
+                   GLib.Variant("(su)", ("org.kde.StatusNotifierWatcher", 0)), None, Gio.DBusCallFlags.NONE, 2000, None)
+except GLib.Error:
+    _snw = None                     # pas de bus de session : étapes de la barre sautées
 steps = []
 
 
@@ -132,6 +151,12 @@ def connexion(win):
 
 
 @step
+def notification_de_connexion(win):
+    n = notified.get("bt-CC:B0:A8:AB:43:43")
+    check(n is not None, "notification « connecté » (comme bt-notify)")
+
+
+@step
 def pas_de_pause_au_demarrage(win):
     check(pause.calls == [], "démarrage (« pas portés » puis l'état lu) : ni pause ni reprise")
 
@@ -193,6 +218,54 @@ def pause_au_retrait(win):
     fakes[0].push(Packet(b"\x2b\x25", [(1, 1), (2, 1), (3, 0), (4, 0)]))
     yield Wait(2, until=lambda: len(pause.calls) == 2)
     check(pause.calls == ["pause", "resume"], "remis : reprise")
+
+
+@step
+def batterie_faible(win):
+    fakes[0].push(Packet(b"\x01\x27", [(2, bytes((100, 18, 67))), (3, b"\x00\x00\x00")]))
+    yield Wait(2, until=lambda: "battery-right" in notified)
+    check("battery-right" in notified, "droit à 18 % : « Batterie faible »")
+    del notified["battery-right"]
+    fakes[0].push(Packet(b"\x01\x27", [(2, bytes((100, 17, 67))), (3, b"\x00\x00\x00")]))
+    yield Wait(0.5)
+    check("battery-right" not in notified, "17 % : pas de deuxième alerte pour le même seuil")
+    fakes[0].push(Packet(b"\x01\x27", [(2, bytes((0, 9, 67))), (3, b"\x00\x00\x00")]))
+    yield Wait(2, until=lambda: "battery-right" in notified)
+    check("battery-right" in notified and "battery-left" not in notified,
+          "9 % : nouvelle alerte ; gauche à 0 (dans le boîtier) : aucune")
+
+
+@step
+def barre_du_haut(win):
+    if _snw is None:
+        print("– pas de bus de session : barre du haut non testée")
+        return
+    yield Wait(3, until=lambda: app.tray is not None and app.tray.registered)
+    check(app.tray is not None and app.tray.registered and snw_registered, "icône enregistrée auprès de la barre")
+    labels = [i[1]["label"].unpack() for i in app.tray_items() if "label" in i[1]]
+    check(labels[0].startswith("FreeBuds 6i — "), "menu : état des écouteurs en tête (" + labels[0] + ")")
+    radios = [(i, p) for i, p in app.tray_items() if "toggle-type" in p]
+    check([p["label"].unpack() for _, p in radios] == [label(m) for m in app.device.get("anc", "mode_options")],
+          "menu : modes du contrôle du bruit")
+    current = [p["label"].unpack() for _, p in radios if p["toggle-state"].unpack() == 1]
+    check(current == [label(app.device.get("anc", "mode"))], "menu : mode actuel coché")
+    awareness = [i for i, p in radios if p["label"].unpack() == label("awareness")][0]
+    want = Packet.write(b"\x2b\x04", [(1, bytes((2, 0xff)))])
+    fakes[0].answer(want, Packet(b"\x2b\x04", [(2, 0)]))
+    fakes[0].answer(Packet.read(b"\x2b\x2a", [1, 2]), Packet(b"\x2b\x2a", [(1, b"\x02\x02")]))
+    app.tray_activate(awareness)
+    yield Wait(3, until=lambda: app.device.get("anc", "mode") == "awareness")
+    check(want.to_bytes() in fakes[0].sent, "menu : transparence envoyée aux écouteurs")
+    yield Wait(0.2)
+    check(win.device_page.anc_buttons["awareness"].get_active(), "la fenêtre suit le menu")
+
+    win.close()
+    yield Wait(0.4)
+    check(not win.get_visible() and app.window is win and app.device is not None,
+          "fenêtre fermée : cachée, Sirène reste dans la barre")
+    app.tray_activate(app.TRAY_SHOW)
+    yield Wait(0.4)
+    check(win.get_visible(), "« Afficher Sirène » : la fenêtre revient")
 
 
 @step

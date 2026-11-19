@@ -8,7 +8,7 @@ gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 from gi.repository import Adw, Gtk  # noqa: E402
 
-from .. import features  # noqa: E402
+from .. import autostart, features  # noqa: E402
 from ..i18n import LANGUAGE_NAMES, tr  # noqa: E402
 from ..settings import settings  # noqa: E402
 from .common import combo_row  # noqa: E402
@@ -46,6 +46,12 @@ class PreferencesWindow(Adw.PreferencesWindow):
         look.add(_choice(tr("Langue"), "language", [tr("Comme le système")] + [LANGUAGE_NAMES[c] for c in codes[1:]],
                          codes, tr("Appliquée au prochain démarrage")))
         page.add(look)
+        session = Adw.PreferencesGroup(title=tr("Session"))
+        auto = Adw.SwitchRow(title=tr("Lancer à l'ouverture de session"), active=autostart.enabled(),
+                             subtitle=tr("Sirène démarre sans fenêtre, dans la barre du haut"))
+        auto.connect("notify::active", lambda r, *_: autostart.set_enabled(r.get_active()))
+        session.add(auto)
+        page.add(session)
         return page
 
     def _features(self) -> Adw.PreferencesPage:

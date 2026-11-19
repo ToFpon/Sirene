@@ -351,4 +351,4 @@ class MainWindow(Adw.ApplicationWindow):
         if not maximized:
             w, h = self.get_default_size()
             settings["window_width"], settings["window_height"] = w, h
-        return False
+        return self.app.window_closing()            # True : cachée, Sirène reste dans la barre
