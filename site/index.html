@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sirène — HUAWEI FreeBuds on GNOME</title>
+<meta name="description" content="Sirène sets HUAWEI FreeBuds earphones (6i, 7i, 4i) from the GNOME desktop: noise control, gestures, equalizer, batteries, pause when an earbud is taken out, top bar icon. A plain Debian package, no Flatpak.">
+<link rel="icon" href="img/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#140a0c;
+    --surface:#1f1013;
+    --surface-2:#2a161a;
+    --line:rgba(255,255,255,.08);
+    --line-strong:rgba(255,255,255,.14);
+    --text:#fbf0f1;
+    --text-dim:rgba(251,240,241,.64);
+    --text-faint:rgba(251,240,241,.40);
+    --teal:#ff7a7a;
+    --teal-bright:#ffb3a7;
+    --teal-deep:#d8436b;
+    --sea:#1a5fb4;
+    --green:#ff9e8a;
+    --display:'Space Grotesk',sans-serif;
+    --body:'Inter',sans-serif;
+    --mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--body);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  ::selection{background:var(--teal);color:#2a0710}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:blur(14px);background:rgba(20,10,12,.75);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:flex;align-items:center;gap:11px;font-family:var(--display);font-weight:600;font-size:1.05rem}
+  .brand img{width:30px;height:30px}
+  .nav-links{display:flex;gap:26px;font-size:.92rem}
+  .nav-links a{color:var(--text-dim);transition:color .2s}
+  .nav-links a:hover{color:var(--text)}
+  .get-pill{font-family:var(--mono);font-size:.74rem;color:var(--green);border:1px solid rgba(255,158,138,.35);background:rgba(255,158,138,.08);padding:6px 14px;border-radius:999px;white-space:nowrap}
+  @media (max-width:720px){.nav-links{display:none}}
+
+  header.hero{padding:150px 0 70px;text-align:center;background:
+      radial-gradient(900px 420px at 50% -10%,rgba(255,122,122,.22),transparent 70%),
+      linear-gradient(180deg,#1d0d10,var(--bg) 70%)}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.78rem;color:var(--teal-bright);border:1px solid rgba(255,179,167,.3);background:rgba(255,122,122,.08);padding:6px 14px;border-radius:999px;margin-bottom:28px}
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(2.4rem,6vw,4.4rem);line-height:1.03;letter-spacing:-.03em;margin-bottom:22px}
+  h1 .accent{background:linear-gradient(120deg,var(--teal-bright),var(--teal) 55%,#f66151);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{font-size:clamp(1.05rem,2vw,1.24rem);color:var(--text-dim);max-width:700px;margin:0 auto 36px}
+  .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:56px}
+  .btn{font-weight:600;font-size:.96rem;padding:13px 26px;border-radius:12px;display:inline-flex;align-items:center;gap:9px;border:1px solid transparent;transition:all .2s}
+  .btn-primary{background:linear-gradient(120deg,var(--teal-bright),var(--teal));color:#2a0710;box-shadow:0 10px 30px -10px rgba(255,122,122,.7)}
+  .btn-primary:hover{transform:translateY(-1px)}
+  .btn-ghost{border-color:var(--line-strong)}
+  .btn-ghost:hover{border-color:var(--teal);background:rgba(255,122,122,.1)}
+  .shot{border-radius:14px;overflow:hidden;border:1px solid var(--line-strong);box-shadow:0 40px 90px -30px rgba(0,0,0,.8),0 0 0 1px rgba(255,122,122,.08)}
+  .hero .shot{max-width:980px;margin:0 auto}
+
+  section{padding:90px 0}
+  .kicker{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+  h2{font-family:var(--display);font-weight:700;font-size:clamp(1.8rem,4vw,2.6rem);letter-spacing:-.02em;margin:10px 0 14px}
+  .sub{color:var(--text-dim);max-width:640px;margin-bottom:44px}
+
+  .row{display:grid;grid-template-columns:1fr 1.25fr;gap:48px;align-items:center;margin-bottom:80px}
+  .row.flip{grid-template-columns:1.25fr 1fr}
+  .row.flip .text{order:2}
+  .row h3{font-family:var(--display);font-size:1.5rem;margin-bottom:12px}
+  .row p{color:var(--text-dim);margin-bottom:14px}
+  .row ul{list-style:none;color:var(--text-dim)}
+  .row li{padding-left:22px;position:relative;margin:6px 0}
+  .row li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;border-radius:2px;background:var(--teal)}
+  @media (max-width:860px){.row,.row.flip{grid-template-columns:1fr}.row.flip .text{order:0}}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px}
+  .card h4{font-family:var(--display);font-size:1.08rem;margin-bottom:8px}
+  .card p{color:var(--text-dim);font-size:.93rem}
+  .card .ico{width:38px;height:38px;border-radius:10px;background:rgba(255,122,122,.12);color:var(--teal-bright);display:grid;place-items:center;margin-bottom:14px;font-family:var(--mono);font-weight:600}
+
+  .install{background:linear-gradient(180deg,var(--bg),#1d0d10)}
+  .install .head{text-align:center;max-width:680px;margin:0 auto 44px}
+  .install .head .sub{margin:0 auto}
+  .icard{max-width:760px;margin:0 auto;background:#0c0507;border:1px solid var(--line-strong);border-radius:16px;overflow:hidden;box-shadow:0 24px 60px -24px rgba(0,0,0,.7)}
+  .icard+.icard{margin-top:22px}
+  .itop{position:relative;display:flex;align-items:center;justify-content:center;padding:11px 12px;border-bottom:1px solid var(--line);background:var(--surface-2);font-weight:600;font-size:.84rem}
+  .copy{position:absolute;top:50%;right:10px;transform:translateY(-50%);font-family:var(--mono);font-size:.72rem;cursor:pointer;color:var(--text-dim);background:var(--surface);border:1px solid var(--line-strong);border-radius:8px;padding:5px 10px}
+  .copy:hover{color:var(--text);border-color:var(--teal)}
+  .cmd{margin:0;padding:18px 22px;font-family:var(--mono);font-size:.86rem;line-height:1.9;color:var(--text);overflow-x:auto;white-space:pre}
+  .cmd .p{color:var(--teal);user-select:none}
+  .cmd .c{color:var(--text-faint)}
+  .ibody{padding:8px 22px;background:var(--surface)}
+  .irow{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .irow:last-child{border-bottom:0}
+  .irow .ri{font-size:20px;width:28px;text-align:center}
+  .irow .rt{flex:1;min-width:0}
+  .irow .rt b{display:block;font-weight:600}
+  .irow .rt span{font-size:.86rem;color:var(--text-dim)}
+  .irow a{color:var(--teal-bright)}
+  .irow a:hover{text-decoration:underline}
+  .irow .row-cmd{display:block;width:fit-content;max-width:100%;margin-top:6px;font-family:var(--mono);font-size:.8rem;color:var(--teal-bright);background:rgba(255,122,122,.1);padding:3px 8px;border-radius:6px;white-space:nowrap;overflow-x:auto}
+  .badge{font-family:var(--mono);font-size:.7rem;padding:4px 10px;border-radius:999px;white-space:nowrap;color:var(--green);background:rgba(255,158,138,.08);border:1px solid rgba(255,158,138,.3)}
+  .reqs{max-width:760px;margin:30px auto 0;font-size:.9rem;color:var(--text-dim);text-align:center}
+  .reqs code{font-family:var(--mono);color:var(--teal-bright);font-size:.84rem}
+  @media (max-width:560px){.irow{flex-wrap:wrap}.irow .rt{flex:1 1 calc(100% - 42px)}.irow .badge{margin-left:42px}}
+
+  footer{border-top:1px solid var(--line);padding:40px 0;color:var(--text-faint);font-size:.88rem}
+  footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+  footer a{color:var(--text-dim)}
+  footer a:hover{color:var(--text)}
+</style>
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#"><img src="img/icon.svg" alt="">Sirène</a>
+    <div class="nav-links">
+      <a href="#settings">Settings</a>
+      <a href="#pause">Auto-pause</a>
+      <a href="#background">Background</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/ToFpon/Sirene">GitHub</a>
+    </div>
+    <span class="get-pill">v0.1.0 · GPL-3.0</span>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span>Version 0.1.0 — for Ubuntu 24.04, Zorin OS 18, Debian 13</span>
+    <h1>Your FreeBuds.<br><span class="accent">On your desktop.</span></h1>
+    <p class="lede">Sirène sets HUAWEI FreeBuds earphones from GNOME, the way the phone app does — noise control,
+      gestures, equalizer, batteries — in a native GTK4 and libadwaita window that follows your desktop theme.
+      No Flatpak: a plain Debian package.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="#install">Install Sirène</a>
+      <a class="btn btn-ghost" href="https://github.com/ToFpon/Sirene">Source code</a>
+    </div>
+    <div class="shot" style="max-width:610px"><img src="img/dark.png" alt="Sirène with FreeBuds 6i connected: batteries of both earbuds and of the case, noise control, dark theme" width="610" height="750"></div>
+  </div>
+</header>
+
+<section id="settings">
+  <div class="wrap">
+    <span class="kicker">Settings</span>
+    <h2>Everything the phone app sets</h2>
+    <p class="sub">Supported: <b>FreeBuds 6i</b>, <b>FreeBuds 7i</b> and <b>FreeBuds 4i</b> (and HONOR Earbuds 2).
+      Sirène talks to them over their own Bluetooth channel and shows only what your model has.</p>
+    <div class="row">
+      <div class="text">
+        <h3>Gestures, one earbud at a time</h3>
+        <ul>
+          <li>Double and triple tap: play / pause, next, previous, voice assistant, nothing</li>
+          <li>Long press: switch noise control, and which modes it cycles through</li>
+          <li>Swipe on the stem for the volume, double tap to answer a call</li>
+        </ul>
+      </div>
+      <div class="shot"><img src="img/gestures.png" alt="Gestures tab: taps, long press, swipe" loading="lazy"></div>
+    </div>
+    <div class="row flip">
+      <div class="text">
+        <h3>Sound and connection</h3>
+        <ul>
+          <li>Noise cancellation (comfort, normal, ultra, dynamic) and awareness (voice boost on the 7i)</li>
+          <li>Equalizer presets, connection or sound quality first, low latency for games and videos</li>
+          <li>Dual connect with your phone, wear detection, voice prompt language, firmware and serial numbers</li>
+        </ul>
+      </div>
+      <div class="shot"><img src="img/device.png" alt="Device tab: dual connect, known devices, voice prompts, about the earphones" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<section id="pause" style="background:var(--surface)">
+  <div class="wrap">
+    <span class="kicker">Auto-pause</span>
+    <h2>Take an earbud out, the music stops</h2>
+    <p class="sub">The earphones tell Sirène when they leave your ear: the players that were playing pause, and
+      resume when you put the earbud back — only those Sirène paused, never one you had stopped yourself (MPRIS:
+      VLC, browsers, Ithaca, Nausicaa, Spotify…).</p>
+    <div class="row">
+      <div class="text">
+        <h3>Your theme, light or dark</h3>
+        <p>No colours of its own: Sirène follows Adwaita, your accent colour and your GTK4 theme.</p>
+      </div>
+      <div class="shot"><img src="img/light.png" alt="Sirène in the light theme" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<section id="background">
+  <div class="wrap">
+    <span class="kicker">Background</span>
+    <h2>Quiet until your earphones connect</h2>
+    <p class="sub">Started with your session, Sirène waits without polling anything. When your FreeBuds connect, an
+      icon appears in the top bar with both batteries and the case, and the noise control one click away; it goes
+      away with them (AppIndicator extension, present on Zorin OS and Ubuntu).</p>
+    <div class="grid">
+      <div class="card"><div class="ico">🔋</div><h4>Low battery</h4><p>A notification when an earbud drops below 20 %, then below 10 %.</p></div>
+      <div class="card"><div class="ico">ᛒ</div><h4>Bluetooth connections</h4><p>A notification when any Bluetooth device connects or disconnects — earphones, mouse, phone — with its icon.</p></div>
+      <div class="card"><div class="ico">🔊</div><h4>Volume pop-up</h4><p>GNOME's volume pop-up at every change while the earphones are connected, swipe included, with the <a href="https://github.com/neuromorph/custom-osd" style="text-decoration:underline">Custom OSD</a> extension.</p></div>
+      <div class="card"><div class="ico">⚙</div><h4>Every feature optional</h4><p>Each one turns on or off in Preferences, right away, without restarting.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="install" class="install">
+  <div class="wrap">
+    <div class="head">
+      <span class="kicker">Install</span>
+      <h2>Ready to set sail.</h2>
+      <p class="sub">Sirène is available for <b>Ubuntu 24.04 “Noble”</b> and <b>26.04 “Resolute”</b> and their derivatives — Zorin OS 18, Linux Mint 22 — from a PPA, under X11 or Wayland. Updates then arrive with the rest of your system.</p>
+    </div>
+    <div class="icard">
+      <div class="itop">Terminal<button class="copy" type="button" title="Copy the two install commands" data-copy="sudo add-apt-repository ppa:nourpon/sirene&#10;sudo apt update &amp;&amp; sudo apt install sirene">Copy</button></div>
+      <pre class="cmd"><span class="p">$ </span>sudo add-apt-repository ppa:nourpon/sirene
+<span class="p">$ </span>sudo apt update &amp;&amp; sudo apt install sirene</pre>
+    </div>
+    <div class="icard">
+      <div class="ibody">
+        <div class="irow"><span class="ri">📦</span><div class="rt"><b>Debian package &amp; PPA</b><span>Signed packages, updated through apt · <a href="https://launchpad.net/~nourpon/+archive/ubuntu/sirene">ppa:nourpon/sirene</a></span></div><span class="badge">Available</span></div>
+        <div class="irow"><span class="ri">🧩</span><div class="rt"><b>Other Debian-based distributions</b><span>Debian 13… · download the .deb from <a href="https://github.com/ToFpon/Sirene/releases">GitHub Releases</a> and open it, or in a terminal:<code class="row-cmd">sudo apt install ./sirene_*_all.deb</code></span></div><span class="badge">Available</span></div>
+        <div class="irow"><span class="ri">💻</span><div class="rt"><b>Source code</b><span>GPL-3.0 · <a href="https://github.com/ToFpon/Sirene">github.com/ToFpon/Sirene</a> · HUAWEI protocol from <a href="https://github.com/melianmiko/OpenFreebuds">OpenFreebuds</a></span></div><span class="badge">Available</span></div>
+        <div class="irow"><span class="ri">🐞</span><div class="rt"><b>Found a bug? Another FreeBuds model?</b><span><a href="https://github.com/ToFpon/Sirene/issues">Open an issue on GitHub</a></span></div><span class="badge">Welcome</span></div>
+      </div>
+    </div>
+    <p class="reqs">Requirements: Python 3.10+, PyGObject, GTK ≥ 4.14, libadwaita ≥ 1.5, BlueZ — all installed by the package. Close OpenFreebuds or MyBuds first: only one program at a time can talk to the earphones.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Sirène — free software, GPL-3.0 · by Tof · protocol from OpenFreebuds (melianmiko), FreeBuds 7i by vicrodh</span>
+    <span><a href="https://github.com/ToFpon/Sirene">GitHub</a> · <a href="https://launchpad.net/~nourpon/+archive/ubuntu/sirene">Launchpad</a> · also <a href="https://tofmicro.pages-perso.free.fr/Odysseus/">Odysseus</a>, <a href="https://tofmicro.pages-perso.free.fr/Ithaca/">Ithaca</a>, <a href="https://tofmicro.pages-perso.free.fr/Nausicaa/">Nausicaa</a>, <a href="https://tofmicro.pages-perso.free.fr/Calypso/">Calypso</a>, <a href="https://tofmicro.pages-perso.free.fr/Telemaque/">Télémaque</a></span>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll(".copy").forEach(b => b.addEventListener("click", () => {
+    navigator.clipboard.writeText(b.dataset.copy).then(() => {
+      const t = b.textContent; b.textContent = "Copied ✓"; setTimeout(() => b.textContent = t, 1600);
+    });
+  }));
+</script>
+</body>
+</html>

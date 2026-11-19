@@ -402,7 +402,7 @@ msgstr "Geräuschsteuerung"
 
 #: sirene/ui/window.py:215
 msgid "Port des écouteurs"
-msgstr "Trageerkennung"
+msgstr "Tragen"
 
 #: sirene/ui/window.py:232 sirene/ui/window.py:70
 msgid "Son"

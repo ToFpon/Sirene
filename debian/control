@@ -1,0 +1,29 @@
+Source: sirene
+Section: sound
+Priority: optional
+Maintainer: Tof <nourpon@gmail.com>
+Build-Depends: debhelper-compat (= 13), dh-python, python3:any
+Standards-Version: 4.6.2
+Homepage: https://github.com/ToFpon/Sirene
+Vcs-Browser: https://github.com/ToFpon/Sirene
+Vcs-Git: https://github.com/ToFpon/Sirene.git
+Rules-Requires-Root: no
+
+Package: sirene
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}, python3 (>= 3.10), python3-gi,
+ gir1.2-gtk-4.0 (>= 4.14), gir1.2-adw-1 (>= 1.5), gir1.2-glib-2.0, bluez
+Recommends: gnome-shell-extension-appindicator, pulseaudio-utils
+Description: settings for HUAWEI FreeBuds earphones on GNOME
+ Sirène sets HUAWEI FreeBuds earphones (6i, 7i, 4i) from the desktop, over
+ their own Bluetooth channel: noise cancellation and awareness modes, every
+ gesture, equalizer, sound quality priority, low latency, wear detection,
+ dual connect, and the battery of each earbud and of the case.
+ .
+ It pauses the players that were playing when an earbud is taken out, and
+ resumes them when it is put back. It waits quietly in the background and
+ shows an icon in the top bar while the earphones are connected, with the
+ batteries and the noise control; it can also announce Bluetooth connections,
+ low batteries and volume changes (with the Custom OSD extension).
+ .
+ The HUAWEI protocol comes from OpenFreebuds.

@@ -148,4 +148,22 @@ sable : les essais réels sont faits par Tof.
    globaux (X11).
 5. FAIT : reprise de `bt-notify.sh` (notifications, affichage du volume par Custom OSD) — Sirène remplace toute
    la bidouille de Tof.
-6. Paquet, PPA, site.
+6. FAIT (0.1.0, à publier sur l'accord de Tof) : paquet, workflow, PPA, site.
+
+## Publication (comme Télémaque)
+
+Paquet, commande et module : `sirene` (nom libre chez Debian, absent de noble ; vérifié avant la 0.1.0).
+PPA `ppa:nourpon/sirene` (créé par Tof) : `tools/ppa.sh` chez Tof (noble puis resolute, garde-fou « à » en fin de
+ligne du changelog, puis le site par `tools/site.sh`, dossier Sirene des pages perso Free). Nouvelle version :
+version dans `sirene/__init__.py`, `debian/sirene.1`, `<release>` de la fiche AppStream, entrée de
+`debian/changelog` (« X~noble1 », date RÉELLE — `date -R`), commit « Version X » sur main :
+`.github/workflows/release-deb.yml` publie le .deb dans les Releases (seulement pour un commit « Version… »).
+Publier seulement avec l'accord explicite de Tof (« on publie »). Dépendances : python3-gi, GTK 4.14,
+libadwaita 1.5, bluez ; Recommends : gnome-shell-extension-appindicator, pulseaudio-utils (pactl, volume).
+Code privé dans /usr/share/sirene, lanceur `/usr/bin/python3 -P -c …` (debian/bin/sirene). Installé, le .desktop
+existe : notifications par Gio.Notification, lancement à l'ouverture de session par `sirene --background`.
+Site : `site/index.html` (anglais, tons corail ; Odysseus bleu, Ithaca violet, Nausicaa orange, Calypso turquoise,
+Télémaque vert), captures de `site/img/` en anglais (`LANGUAGE=en … tools/screenshot.py site/img/dark.png --dark
+--size=620x760`, gestures `--tab=gestures`, device `--tab=device`, light sans `--dark`) ; version dans la pastille
+et l'accroche, à tenir à jour. Paquet vérifié ici : dpkg-buildpackage (binaire et source), lintian sans remarque,
+appstreamcli validate (note pédante), installé puis lancé.

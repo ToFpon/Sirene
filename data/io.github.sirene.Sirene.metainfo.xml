@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.sirene.Sirene</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>Sirène</name>
+  <summary>Settings for HUAWEI FreeBuds earphones</summary>
+  <summary xml:lang="fr">Réglages des écouteurs HUAWEI FreeBuds</summary>
+  <summary xml:lang="de">Einstellungen für HUAWEI-FreeBuds-Ohrhörer</summary>
+  <developer id="io.github.sirene">
+    <name>Tof</name>
+  </developer>
+  <description>
+    <p>
+      Sirène sets HUAWEI FreeBuds earphones (6i, 7i, 4i) from the GNOME desktop, the way the phone app does:
+      it finds them on its own when they connect, and waits quietly in the background the rest of the time.
+    </p>
+    <p xml:lang="fr">
+      Sirène règle les écouteurs HUAWEI FreeBuds (6i, 7i, 4i) depuis le bureau GNOME, comme l'application du
+      téléphone : elle les trouve toute seule quand ils se connectent, et attend en silence le reste du temps.
+    </p>
+    <p xml:lang="de">
+      Sirène stellt HUAWEI-FreeBuds-Ohrhörer (6i, 7i, 4i) vom GNOME-Desktop aus ein, wie die App des Telefons:
+      Sie findet sie von selbst, sobald sie sich verbinden, und wartet sonst still im Hintergrund.
+    </p>
+    <ul>
+      <li>Noise cancellation and awareness, with their levels</li>
+      <li>Every gesture of each earbud: taps, long press, swipe</li>
+      <li>Equalizer, sound quality priority, low latency, dual connect</li>
+      <li>Battery of each earbud and of the case, in the window and in the top bar</li>
+      <li>Pauses the players when an earbud is taken out, resumes them when it is put back</li>
+      <li>Notifications of Bluetooth connections and low battery; volume pop-up with the Custom OSD extension</li>
+    </ul>
+    <ul xml:lang="fr">
+      <li>Réduction de bruit et transparence, avec leurs niveaux</li>
+      <li>Tous les gestes de chaque écouteur : tapes, appui long, glisser</li>
+      <li>Égaliseur, priorité du son, faible latence, double connexion</li>
+      <li>Batterie de chaque écouteur et du boîtier, dans la fenêtre et dans la barre du haut</li>
+      <li>Met les lecteurs en pause quand on retire un écouteur, les relance quand on le remet</li>
+      <li>Notifications de connexion Bluetooth et de batterie faible ; volume affiché avec l'extension Custom OSD</li>
+    </ul>
+    <ul xml:lang="de">
+      <li>Geräuschunterdrückung und Transparenz, mit ihren Stufen</li>
+      <li>Alle Gesten jedes Ohrhörers: Tippen, langes Drücken, Wischen</li>
+      <li>Equalizer, Klangpriorität, geringe Latenz, Doppelverbindung</li>
+      <li>Akku jedes Ohrhörers und des Etuis, im Fenster und in der oberen Leiste</li>
+      <li>Pausiert die Player beim Herausnehmen eines Ohrhörers und setzt sie beim Einsetzen fort</li>
+      <li>Benachrichtigungen bei Bluetooth-Verbindungen und schwachem Akku; Lautstärkeanzeige mit der Erweiterung Custom OSD</li>
+    </ul>
+    <p>The HUAWEI protocol comes from OpenFreebuds (melianmiko), FreeBuds 7i support from vicrodh.</p>
+  </description>
+  <url type="homepage">https://github.com/ToFpon/Sirene</url>
+  <url type="vcs-browser">https://github.com/ToFpon/Sirene</url>
+  <url type="bugtracker">https://github.com/ToFpon/Sirene/issues</url>
+  <launchable type="desktop-id">io.github.sirene.Sirene.desktop</launchable>
+  <categories>
+    <category>Settings</category>
+    <category>HardwareSettings</category>
+  </categories>
+  <keywords>
+    <keyword>FreeBuds</keyword>
+    <keyword>Huawei</keyword>
+    <keyword>Bluetooth</keyword>
+    <keyword>earbuds</keyword>
+  </keywords>
+  <provides>
+    <binary>sirene</binary>
+  </provides>
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="0.1.0" date="2026-11-19">
+      <description>
+        <p>First version.</p>
+        <ul>
+          <li>Settings for HUAWEI FreeBuds 6i, 7i and 4i: noise control, gestures, equalizer, sound priority, low latency, wear detection, dual connect, batteries</li>
+          <li>Pauses the players when an earbud is taken out, resumes them when it is put back</li>
+          <li>Icon in the top bar while the earphones are connected, start at login, notifications of connections and low battery, volume pop-up with the Custom OSD extension</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+</component>

@@ -395,7 +395,7 @@ msgstr "Noise control"
 
 #: sirene/ui/window.py:215
 msgid "Port des écouteurs"
-msgstr "Wear detection"
+msgstr "Wearing"
 
 #: sirene/ui/window.py:232 sirene/ui/window.py:70
 msgid "Son"

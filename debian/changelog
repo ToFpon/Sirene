@@ -1,0 +1,11 @@
+sirene (0.1.0~noble1) noble; urgency=medium
+
+  * Première version : réglages des HUAWEI FreeBuds 6i, 7i et 4i (contrôle
+    du bruit, gestes, égaliseur, priorité du son, faible latence, détection
+    du port, double connexion, batterie de chaque écouteur et du boîtier).
+  * Pause des lecteurs au retrait d'un écouteur, reprise quand on le remet.
+  * Icône dans la barre du haut pendant que les écouteurs sont connectés,
+    lancement à l'ouverture de session, notifications de connexion et de
+    batterie faible, affichage du volume avec l'extension Custom OSD.
+
+ -- Tof <nourpon@gmail.com>  Thu, 19 Nov 2026 17:21:58 +0000

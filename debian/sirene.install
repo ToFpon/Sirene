@@ -1,0 +1,5 @@
+debian/bin/sirene usr/bin
+data/io.github.sirene.Sirene.desktop usr/share/applications
+data/io.github.sirene.Sirene.metainfo.xml usr/share/metainfo
+data/icons/hicolor/scalable/apps/io.github.sirene.Sirene.svg usr/share/icons/hicolor/scalable/apps
+data/icons/hicolor/symbolic/apps/io.github.sirene.Sirene-symbolic.svg usr/share/icons/hicolor/symbolic/apps

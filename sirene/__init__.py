@@ -2,5 +2,5 @@
 
 APP_ID = "io.github.sirene.Sirene"
 APP_NAME = "Sirène"
-VERSION = "0.0.2"
+VERSION = "0.1.0"
 __version__ = VERSION

@@ -1,0 +1,28 @@
+.TH SIRENE 1 "November 2026" "Sirène 0.1.0" "User Commands"
+.SH NAME
+sirene \- settings for HUAWEI FreeBuds earphones on GNOME (Sirène)
+.SH SYNOPSIS
+.B sirene
+[\fIOPTION\fR]
+.SH DESCRIPTION
+Sirène sets HUAWEI FreeBuds earphones (6i, 7i, 4i) over their own Bluetooth
+channel: noise control, gestures, equalizer, sound, wear detection, dual
+connect, batteries. It finds the earphones on its own when they connect, pauses
+the players when an earbud is taken out, and can stay in the background with an
+icon in the top bar. If Sirène is already running, a new launch shows its window.
+.SH OPTIONS
+.TP
+.BR \-b ", " \-\-background
+Start without a window (used at login).
+.TP
+.B \-\-version
+Show the version.
+.SH FILES
+.TP
+.I ~/.config/sirene/settings.json
+Preferences.
+.TP
+.I ~/.config/autostart/io.github.sirene.Sirene.desktop
+Start at login (Preferences).
+.SH SEE ALSO
+https://github.com/ToFpon/Sirene
