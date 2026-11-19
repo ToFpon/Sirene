@@ -14,6 +14,13 @@ les premiers écouteurs à réduction de bruit.
   récente (pas d'Adw.Dialog, Adw.AlertDialog…). Paquets apt seulement.
 - Travail directement sur main (comme les autres applications de Tof).
 - Le `python3` du bac à sable n'a pas `gi` : utiliser `python3.12`.
+- Tout texte visible passe par `tr()` / `ntr()`. Après modification : `python3 tools/update-pot.py`, compléter
+  `data/locale/en.po` et `de.po`, puis `msgfmt -c --statistics` et `msgcmp`. Ossature (i18n, settings, features,
+  ui/common, préférences) reprise de Télémaque.
+- Dialogues : de vraies fenêtres (`common.AlertDialog`, `common.DialogWindow`, `Adw.PreferencesWindow`,
+  `Adw.AboutWindow`). Thème du système : `data/base.css` ne fait que de la mise en page.
+- Chaque fonctionnalité facultative est dans `sirene/features.py` (auto_pause) et se consulte au moment de l'usage.
+- Toute fonction passée à `idle_add` / `timeout_add` renvoie False (sauf répétition voulue).
 - Reprise d'OpenFreebuds (melianmiko/OpenFreebuds, GPL-3.0 ; FreeBuds 7i : pull request #135 de vicrodh,
   fork vicrodh/OpenFreebuds, branche feature/freebuds-7i) : protocole et pilotes réécrits, à créditer dans
   debian/copyright, le README et « À propos ».
@@ -45,6 +52,27 @@ les premiers écouteurs à réduction de bruit.
 - `sirene/probe.py` : diagnostic en ligne de commande (`python3.12 -m sirene.probe [MAC] [--debug] [--set
   groupe.prop=valeur]`) — tout ce que disent les écouteurs, puis chaque changement. Premier essai réel chez Tof.
 
+## Interface
+
+- `app.py` : `SireneApp` (instance unique). Suit BlueZ (`bluez.Watcher` : PropertiesChanged / InterfacesAdded /
+  Removed, AUCUNE interrogation) ; écouteurs pris en charge connectés → `Device` ouvert dans un fil (2, 5, 10 s de
+  plus si le canal refuse : il n'est pas toujours prêt juste après la connexion ; puis page « Impossible de
+  joindre », avec Réessayer — souvent OpenFreebuds ou MyBuds qui tient le canal) ; partis → canal fermé ; canal
+  fermé par les écouteurs alors que BlueZ les dit connectés → rouvert. Jamais de tentative vers un absent.
+  Valeurs du moteur → `idle_add(_on_change, …, prêt)`. PIÈGE vu au test : « prêt » se lit AU MOMENT de l'annonce
+  (fil du moteur) ; lu dans l'idle_add, dev.ready est déjà posé et le « pas portés » d'office du démarrage
+  déclenchait pause puis reprise. Valeurs arrivées avant `_opened` : non relayées, la page relit tout.
+  Écriture : `set_value` → `Device.set` ; échec (pas de réponse) → toast et la ligne reprend la vraie valeur.
+- `backend/autopause.py` : MPRIS, la logique de lola-autopause.sh (lecteur par lecteur, seuls ceux que nous avons
+  mis en pause reprennent), appels D-Bus dans un fil. Retrait = `state.in_ear` vrai → faux (les deux portés →
+  un retiré), seulement après le démarrage.
+- `ui/window.py` : pages « aucun écouteur », « connexion… », « impossible de joindre », page des écouteurs
+  (`DevicePage`) : piles gauche / droit / boîtier (+ porté / retiré), contrôle du bruit (boutons liés) et niveau,
+  gestes, son (égaliseur, priorité, faible latence), détection du port, double connexion (+ appareils connus),
+  langue des messages, infos. Lignes construites une fois, tenues à jour par `changed(groupe, prop)`, cachées
+  tant que les écouteurs n'ont pas donné la valeur ; groupe caché si toutes ses lignes le sont. Code inconnu
+  (triple tape « 4 », « 5 », « 6 » des 6i) montré tel quel. `ui/labels.py` : identifiants → textes.
+
 ## Port des écouteurs et auto-pause (vu chez Tof, novembre 2026)
 
 - Trame 2B25 : p1 = gauche, p2 = droit (01 porté, 00 retiré). 7i : y répondent sur demande et l'annoncent pour
@@ -60,8 +88,14 @@ les premiers écouteurs à réduction de bruit.
 
 ```sh
 python3.12 -m unittest discover -s tests        # trames + fonctions contre de faux écouteurs (socketpair)
-python3 -m pyflakes sirene tests
+dbus-run-session -- python3.12 -m unittest tests.test_autopause   # pause par MPRIS (faux lecteurs)
+xvfb-run -a python3.12 tests/ui_smoke.py         # interface + faux BlueZ + faux 6i : « Aucune erreur. »
+LANGUAGE=en … ; LANGUAGE=de …
+python3 -m pyflakes sirene tests tools
 ```
+
+Captures : `xvfb-run -a -s "-screen 0 1280x2400x24" python3.12 tools/screenshot.py SORTIE.png [--dark] [--empty]
+[--size=LxH] [--scroll=PIXELS]` (faux 6i aux valeurs de Tof ; taille posée par le settings.json jetable).
 
 `tests/fake_buds.py` : faux écouteurs qui répondent d'après un modèle {trame demandée : [réponses]} (comme le
 banc d'essai d'OpenFreebuds) et envoient des trames spontanées (`push`). Trames réelles : 7i (tests de la
@@ -72,9 +106,9 @@ sable : les essais réels sont faits par Tof.
 
 1. FAIT : squelette, protocole, toutes les fonctions des 4i / 6i / 7i, connexion, diagnostic.
 2. Essai réel de `sirene.probe` sur les 6i de Tof (puis les 7i à Noël).
-3. Interface GTK4 (ossature de Télémaque) : page de l'appareil (batterie, contrôle du bruit, gestes, égaliseur,
-   double connexion, réglages), suivi de BlueZ (connexion / déconnexion, sans boucle sur un appareil absent).
-4. Auto-pause par MPRIS (lecteurs qui jouaient seulement, comme lola-autopause), icône de la barre avec la
-   batterie, alerte batterie faible, action à la connexion, raccourcis globaux (X11).
+3. FAIT (0.0.1, à essayer chez Tof) : interface, suivi de BlueZ, pause au retrait par MPRIS.
+   Reste : égaliseur personnalisé (bandes), actions de la double connexion (connecter, oublier, préféré).
+4. Icône de la barre avec la batterie, arrière-plan, alerte batterie faible, action à la connexion, raccourcis
+   globaux (X11).
 5. Reprise de `bt-notify.sh` : notifications de connexion et affichage du volume.
 6. Paquet, PPA, site.

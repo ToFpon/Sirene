@@ -1,0 +1,4 @@
+/* Mise en page seulement : les couleurs viennent du thème GTK du système. */
+.battery-tile { padding: 12px 6px; }
+.battery-tile levelbar trough, .battery-tile levelbar block { min-height: 4px; border-radius: 2px; }
+.battery-tile levelbar { margin: 0 12px; }

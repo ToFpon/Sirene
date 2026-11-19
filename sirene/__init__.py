@@ -1,3 +1,6 @@
-"""Sirène — réglages des écouteurs Huawei FreeBuds en GTK4."""
+"""Sirène — réglages des écouteurs Huawei FreeBuds en GTK4 / libadwaita."""
 
-__version__ = "0.0.1"
+APP_ID = "io.github.sirene.Sirene"
+APP_NAME = "Sirène"
+VERSION = "0.0.1"
+__version__ = VERSION
