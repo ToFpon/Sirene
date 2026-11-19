@@ -116,6 +116,14 @@ les premiers écouteurs à réduction de bruit.
   dixièmes de dB (comme OpenFreebuds), entendues tout de suite : un seul envoi 300 ms après le dernier mouvement
   (`_eq_send`) ; « Modifications non enregistrées » → Enregistrer (`eq_saved` vrai) / Annuler (faux = valeurs
   d'avant) ; « Supprimer ce préréglage » (`eq_rows` None). Préréglage intégré : pas de bandes.
+- Action à la connexion des écouteurs (Préférences → Général → Écouteurs, réglage `on_connect` : rien, réduction,
+  transparence, désactivé, ouvrir la fenêtre ; l'« automatisation » d'OpenFreebuds) : une fois par connexion
+  Bluetooth (`_action_for`, posé par `_open` sauf réouverture du canal), dès que les écouteurs sont prêts
+  (événement device.ready, ou déjà prêts à `_opened`).
+- Raccourcis clavier : `sirene --anc=off|cancellation|awareness|next`, transmis à l'instance qui tourne
+  (GApplication) sans fenêtre ; à brancher dans les raccourcis personnalisés de GNOME (X11 ET Wayland, plutôt que
+  des raccourcis globaux X11 comme OpenFreebuds). Préférences : les commandes à copier (`command_text` : ce Python
+  + bin/sirene lancé des sources). Code de retour 1 sans écouteurs.
 - Double connexion (onglet Appareil) : par appareil connu, étoile = préféré, Connecter / Déconnecter, Oublier…
   (confirmation). « Cet ordinateur » = adresse d'un de NOS adaptateurs (`bluez.Watcher.adapters`) : ni
   Déconnecter ni Oublier (on se couperait des écouteurs).
@@ -157,8 +165,8 @@ sable : les essais réels sont faits par Tof.
 3. FAIT (0.0.1, à essayer chez Tof) : interface, suivi de BlueZ, pause au retrait par MPRIS.
    FAIT ensuite : égaliseur personnalisé et actions de la double connexion (ci-dessous).
 4. FAIT (0.0.2) : icône de la barre (batterie, contrôle du bruit), arrière-plan, lancement à l'ouverture de
-   session, notifications de connexion, alerte batterie faible. Reste : action à la connexion, raccourcis
-   globaux (X11).
+   session, notifications de connexion, alerte batterie faible ; puis action à la connexion et raccourcis
+   clavier (`--anc`).
 5. FAIT : reprise de `bt-notify.sh` (notifications, affichage du volume par Custom OSD) — Sirène remplace toute
    la bidouille de Tof.
 6. FAIT (0.1.0, à publier sur l'accord de Tof) : paquet, workflow, PPA, site.

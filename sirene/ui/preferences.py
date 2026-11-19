@@ -14,6 +14,13 @@ from ..settings import settings  # noqa: E402
 from .common import combo_row  # noqa: E402
 
 
+def command_text(cmd: str) -> str:
+    """Commande à copier : `sirene …` une fois installée, sinon ce Python et bin/sirene (lancée des sources)."""
+    from ..autostart import command
+    base = command().rsplit(" --background", 1)[0]
+    return base + cmd[len("sirene"):]
+
+
 def apply_theme():
     Adw.StyleManager.get_default().set_color_scheme({
         "light": Adw.ColorScheme.FORCE_LIGHT,
@@ -58,6 +65,30 @@ class PreferencesWindow(Adw.PreferencesWindow):
         only.connect("notify::active", lambda r, *_: settings.__setitem__("tray_only_connected", r.get_active()))
         session.add(only)
         page.add(session)
+
+        buds = Adw.PreferencesGroup(title=tr("Écouteurs"))
+        buds.add(_choice(tr("À la connexion des écouteurs"), "on_connect",
+                         [tr("Ne rien faire"), tr("Activer la réduction de bruit"), tr("Activer la transparence"),
+                          tr("Désactiver le contrôle du bruit"), tr("Ouvrir la fenêtre de Sirène")],
+                         ["none", "cancellation", "awareness", "off", "window"]))
+        page.add(buds)
+
+        keys = Adw.PreferencesGroup(
+            title=tr("Raccourcis clavier"),
+            description=tr("Dans Paramètres → Clavier → Raccourcis personnalisés, ajoutez un raccourci avec l'une de "
+                           "ces commandes (sous X11 comme sous Wayland)"))
+        for cmd, title in (("sirene --anc=next", tr("Mode suivant du contrôle du bruit")),
+                           ("sirene --anc=cancellation", tr("Réduction de bruit")),
+                           ("sirene --anc=awareness", tr("Transparence")),
+                           ("sirene --anc=off", tr("Contrôle du bruit désactivé"))):
+            row = Adw.ActionRow(title=title, subtitle=command_text(cmd), subtitle_selectable=True)
+            copy = Gtk.Button(icon_name="edit-copy-symbolic", valign=Gtk.Align.CENTER, tooltip_text=tr("Copier"))
+            copy.add_css_class("flat")
+            copy.connect("clicked", lambda b, c=command_text(cmd): (b.get_clipboard().set(c),
+                                                                    b.set_icon_name("object-select-symbolic")))
+            row.add_suffix(copy)
+            keys.add(row)
+        page.add(keys)
         return page
 
     def _features(self) -> Adw.PreferencesPage:

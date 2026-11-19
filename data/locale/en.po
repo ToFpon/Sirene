@@ -12,7 +12,15 @@ msgstr ""
 msgid "Démarrer sans fenêtre, dans la barre du haut"
 msgstr "Start without a window, in the top bar"
 
-#: sirene/app.py:246
+#: sirene/app.py:56
+msgid ""
+"Contrôle du bruit : off, cancellation, awareness ou next (pour un raccourci "
+"clavier)"
+msgstr ""
+"Noise control: off, cancellation, awareness or next (for a keyboard "
+"shortcut)"
+
+#: sirene/app.py:287
 msgid ""
 "Le canal des écouteurs ne répond pas, ou un autre programme l'occupe "
 "(OpenFreebuds, MyBuds…). Fermez-le, puis réessayez."
@@ -20,71 +28,71 @@ msgstr ""
 "The earphones' channel does not answer, or another program is using it "
 "(OpenFreebuds, MyBuds…). Close it, then try again."
 
-#: sirene/app.py:444
+#: sirene/app.py:487
 msgid "Protocole et pilotes"
 msgstr "Protocol and drivers"
 
-#: sirene/app.py:447
+#: sirene/app.py:490
 msgid "Remerciements"
 msgstr "Thanks"
 
-#: sirene/app.py:333
+#: sirene/app.py:376
 msgid "Les écouteurs n'ont pas pris en compte ce réglage"
 msgstr "The earphones did not take this setting"
 
-#: sirene/app.py:375 sirene/ui/window.py:322
+#: sirene/app.py:418 sirene/ui/window.py:322
 msgid "Connecté"
 msgstr "Connected"
 
-#: sirene/app.py:375
+#: sirene/app.py:418
 msgid "Déconnecté"
 msgstr "Disconnected"
 
-#: sirene/app.py:402
+#: sirene/app.py:445
 msgid "G"
 msgstr "L"
 
-#: sirene/app.py:402
+#: sirene/app.py:445
 msgid "D"
 msgstr "R"
 
-#: sirene/app.py:402 sirene/ui/window.py:197
+#: sirene/app.py:445 sirene/ui/window.py:197
 msgid "Boîtier"
 msgstr "Case"
 
-#: sirene/app.py:442
+#: sirene/app.py:485
 msgid "Réglages des écouteurs HUAWEI FreeBuds"
 msgstr "Settings for HUAWEI FreeBuds earphones"
 
-#: sirene/app.py:419
+#: sirene/app.py:462
 msgid "Afficher Sirène"
 msgstr "Show Sirène"
 
-#: sirene/app.py:419 sirene/ui/window.py:491
+#: sirene/app.py:462 sirene/ui/window.py:491
 msgid "Quitter"
 msgstr "Quit"
 
-#: sirene/app.py:388
+#: sirene/app.py:431
 msgid "Écouteur gauche : {0} %"
 msgstr "Left earbud: {0} %"
 
-#: sirene/app.py:388
+#: sirene/app.py:431
 msgid "Écouteur droit : {0} %"
 msgstr "Right earbud: {0} %"
 
-#: sirene/app.py:389
+#: sirene/app.py:432
 msgid "Batterie faible"
 msgstr "Low battery"
 
-#: sirene/app.py:399 sirene/ui/window.py:496
+#: sirene/app.py:442 sirene/ui/window.py:496
 msgid "Aucun écouteur connecté"
 msgstr "No earphones connected"
 
-#: sirene/app.py:400 sirene/ui/window.py:545
+#: sirene/app.py:443 sirene/ui/window.py:545
 msgid "Connexion à {0}…"
 msgstr "Connecting to {0}…"
 
-#: sirene/app.py:399 sirene/ui/window.py:547
+#: sirene/app.py:442 sirene/ui/window.py:547
 msgid "Impossible de joindre {0}"
 msgstr "Cannot reach {0}"
 
@@ -155,11 +163,11 @@ msgstr ""
 msgid "Désactivé"
 msgstr "Off"
 
-#: sirene/ui/labels.py:13
+#: sirene/ui/labels.py:13 sirene/ui/preferences.py:81
 msgid "Réduction de bruit"
 msgstr "Noise cancellation"
 
-#: sirene/ui/labels.py:14
+#: sirene/ui/labels.py:14 sirene/ui/preferences.py:82
 msgid "Transparence"
 msgstr "Awareness"
 
@@ -311,59 +319,59 @@ msgstr "Modes cycled, right earbud"
 msgid "Glisser sur la tige"
 msgstr "Swipe on the stem"
 
-#: sirene/ui/preferences.py:41
+#: sirene/ui/preferences.py:48
 msgid "Style"
 msgstr "Style"
 
-#: sirene/ui/preferences.py:33 sirene/ui/window.py:489
+#: sirene/ui/preferences.py:40 sirene/ui/window.py:489
 msgid "Préférences"
 msgstr "Preferences"
 
-#: sirene/ui/preferences.py:39
+#: sirene/ui/preferences.py:46
 msgid "Général"
 msgstr "General"
 
-#: sirene/ui/preferences.py:40
+#: sirene/ui/preferences.py:47
 msgid "Apparence"
 msgstr "Appearance"
 
-#: sirene/ui/preferences.py:41 sirene/ui/preferences.py:46
+#: sirene/ui/preferences.py:48 sirene/ui/preferences.py:53
 msgid "Comme le système"
 msgstr "Follow system"
 
-#: sirene/ui/preferences.py:41
+#: sirene/ui/preferences.py:48
 msgid "Clair"
 msgstr "Light"
 
-#: sirene/ui/preferences.py:41
+#: sirene/ui/preferences.py:48
 msgid "Sombre"
 msgstr "Dark"
 
-#: sirene/ui/preferences.py:46 sirene/ui/window.py:259
+#: sirene/ui/preferences.py:53 sirene/ui/window.py:259
 msgid "Langue"
 msgstr "Language"
 
-#: sirene/ui/preferences.py:47
+#: sirene/ui/preferences.py:54
 msgid "Appliquée au prochain démarrage"
 msgstr "Applied at next start"
 
-#: sirene/ui/preferences.py:49
+#: sirene/ui/preferences.py:56
 msgid "Session"
 msgstr "Session"
 
-#: sirene/ui/preferences.py:50
+#: sirene/ui/preferences.py:57
 msgid "Lancer à l'ouverture de session"
 msgstr "Start at login"
 
-#: sirene/ui/preferences.py:51
+#: sirene/ui/preferences.py:58
 msgid "Sirène démarre sans fenêtre, dans la barre du haut"
 msgstr "Sirène starts without a window, in the top bar"
 
-#: sirene/ui/preferences.py:54
+#: sirene/ui/preferences.py:61
 msgid "Icône seulement avec les écouteurs"
 msgstr "Icon only with the earphones"
 
-#: sirene/ui/preferences.py:56
+#: sirene/ui/preferences.py:63
 msgid ""
 "Sirène attend en silence et n'apparaît dans la barre du haut que pendant que"
 " vos écouteurs sont connectés"
@@ -371,15 +379,67 @@ msgstr ""
 "Sirène waits quietly and only appears in the top bar while your earphones "
 "are connected"
 
-#: sirene/ui/preferences.py:64
+#: sirene/ui/preferences.py:69
+msgid "Écouteurs"
+msgstr "Earphones"
+
+#: sirene/ui/preferences.py:70
+msgid "À la connexion des écouteurs"
+msgstr "When the earphones connect"
+
+#: sirene/ui/preferences.py:77
+msgid "Raccourcis clavier"
+msgstr "Keyboard Shortcuts"
+
+#: sirene/ui/preferences.py:78
+msgid ""
+"Dans Paramètres → Clavier → Raccourcis personnalisés, ajoutez un raccourci "
+"avec l'une de ces commandes (sous X11 comme sous Wayland)"
+msgstr ""
+"In Settings → Keyboard → Custom Shortcuts, add a shortcut with one of these "
+"commands (under X11 as under Wayland)"
+
+#: sirene/ui/preferences.py:80
+msgid "Mode suivant du contrôle du bruit"
+msgstr "Next noise control mode"
+
+#: sirene/ui/preferences.py:83
+msgid "Contrôle du bruit désactivé"
+msgstr "Noise control off"
+
+#: sirene/ui/preferences.py:95
 msgid "Fonctionnalités"
 msgstr "Features"
 
-#: sirene/ui/preferences.py:66
+#: sirene/ui/preferences.py:97
 msgid ""
 "Chaque fonctionnalité s'active ou se coupe tout de suite, sans redémarrer "
 "Sirène"
 msgstr "Each feature turns on or off right away, without restarting Sirène"
+
+#: sirene/ui/preferences.py:71
+msgid "Ne rien faire"
+msgstr "Do nothing"
+
+#: sirene/ui/preferences.py:71
+msgid "Activer la réduction de bruit"
+msgstr "Turn on noise cancellation"
+
+#: sirene/ui/preferences.py:71
+msgid "Activer la transparence"
+msgstr "Turn on awareness"
+
+#: sirene/ui/preferences.py:72
+msgid "Désactiver le contrôle du bruit"
+msgstr "Turn off noise control"
+
+#: sirene/ui/preferences.py:72
+msgid "Ouvrir la fenêtre de Sirène"
+msgstr "Open the Sirène window"
+
+#: sirene/ui/preferences.py:85
+msgid "Copier"
+msgstr "Copy"
 
 #: sirene/ui/window.py:195
 msgid "Gauche"

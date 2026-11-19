@@ -52,6 +52,9 @@ class SireneApp(Adw.Application):
         GLib.set_application_name(APP_NAME)
         self.add_main_option("background", ord("b"), GLib.OptionFlags.NONE, GLib.OptionArg.NONE,
                              tr("Démarrer sans fenêtre, dans la barre du haut"), None)
+        self.add_main_option("anc", 0, GLib.OptionFlags.NONE, GLib.OptionArg.STRING,
+                             tr("Contrôle du bruit : off, cancellation, awareness ou next (pour un raccourci clavier)"),
+                             "MODE")
         self._watcher_factory = watcher
         self._connect = connect
         self._timeout = timeout
@@ -69,6 +72,7 @@ class SireneApp(Adw.Application):
         self.tray = None
         self._notifier = None
         self._volume = None
+        self._action_for = None                 # adresse des écouteurs dont l'action à la connexion reste à faire
         self._osd_settings = None
         self._held = False
         self._bt_seen: dict[str, bool] = {}     # adresse → connecté (notifications)
@@ -110,7 +114,14 @@ class SireneApp(Adw.Application):
         self._pick()
 
     def do_command_line(self, cmd):
-        background = cmd.get_options_dict().contains("background")
+        opts = cmd.get_options_dict()
+        anc = opts.lookup_value("anc", GLib.VariantType("s"))
+        if anc is not None:                     # raccourci clavier : sans fenêtre
+            ok = self.anc_command(anc.get_string())
+            if self.window is None and not self._held and features.enabled("tray"):
+                self._hold()                    # Sirène vient de démarrer pour ça : elle reste en arrière-plan
+            return 0 if ok else 1
+        background = opts.contains("background")
         if background and self.window is None and features.enabled("tray"):
             self._hold()                        # ouverture de session : l'icône seulement
         else:
@@ -204,8 +215,10 @@ class SireneApp(Adw.Application):
         if d.connected and self.bt is None and models.find(d.name):
             self._open(d)
 
-    def _open(self, d, attempt=0):
+    def _open(self, d, attempt=0, reopen=False):
         self._cancel_retry()
+        if attempt == 0 and not reopen:
+            self._action_for = d.address
         self.bt, self.bt_name, self._attempt = d, d.name, attempt
         model = models.find(d.name)
         self._set_state("busy")
@@ -233,7 +246,35 @@ class SireneApp(Adw.Application):
         # la page relit tout (show_state), le port part de la valeur connue.
         self._worn = dev.get("state", "in_ear")
         self._set_state("device")
+        if dev.ready.is_set():                  # « prêt » déjà annoncé avant que l'appareil soit posé
+            self._device_ready()
         return False
+
+    def _device_ready(self):
+        """Écouteurs prêts : action à la connexion (réglage « on_connect », comme l'automatisation d'OpenFreebuds),
+        une seule fois par connexion Bluetooth (pas à la réouverture du canal)."""
+        if self.bt is None or self._action_for != self.bt.address:
+            return
+        self._action_for = None
+        action = settings["on_connect"]
+        if action == "window":
+            self.show_window()
+        elif action in ("off", "cancellation", "awareness"):
+            self.anc_command(action)
+
+    def anc_command(self, mode: str) -> bool:
+        """`sirene --anc=…` et action à la connexion : off, cancellation, awareness, next (mode suivant)."""
+        dev = self.device
+        if dev is None or self.state != "device":
+            return False
+        modes = dev.get("anc", "mode_options") or []
+        if mode == "next" and modes:
+            current = dev.get("anc", "mode")
+            mode = modes[(modes.index(current) + 1) % len(modes)] if current in modes else modes[0]
+        if mode not in modes or mode == dev.get("anc", "mode"):
+            return mode in modes
+        self.set_value("anc", "mode", mode)
+        return True
 
     def _open_failed(self, dev, d, error):
         if self.bt is None or d.address != self.bt.address:
@@ -290,10 +331,12 @@ class SireneApp(Adw.Application):
             bt = self.bt
             self._close()
             if bt is not None and bt.connected:
-                self._open(bt)
+                self._open(bt, reopen=True)
             else:
                 self._set_state("none")
             return False
+        if (group, prop) == ("device", "ready"):
+            self._device_ready()
         if (group, prop) == ("state", "in_ear"):
             self._wear_changed(value, ready)
         if group == "battery" and prop in ("left", "right"):

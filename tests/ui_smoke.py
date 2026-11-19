@@ -48,8 +48,13 @@ class FakePause:
 fakes = []
 
 
+extra_answers = []                  # réponses de plus pour les prochains faux écouteurs (request, response)
+
+
 def connect(address, channel):
     f = buds_6i()
+    for req, resp in extra_answers:
+        f.answer(req, resp)
     fakes.append(f)
     return f.connect(address, channel)
 
@@ -428,10 +433,38 @@ def deconnexion(win):
 
 
 @step
+def action_a_la_connexion(win):
+    """Réglage « À la connexion des écouteurs » : transparence, une fois, dès qu'ils sont prêts."""
+    from sirene.settings import settings
+    settings["on_connect"] = "awareness"
+    want = Packet.write(b"\x2b\x04", [(1, bytes((2, 0xff)))])
+    extra_answers[:] = [(want, Packet(b"\x2b\x04", [(2, 0)]))]
+    n = len(fakes)
+    watchers[0].announce(True)
+    yield Wait(5, until=lambda: len(fakes) > n and want.to_bytes() in fakes[-1].sent)
+    check(len(fakes) > n and want.to_bytes() in fakes[-1].sent, "connexion : transparence demandée aux écouteurs")
+    yield Wait(0.3)
+    check(fakes[-1].sent.count(want.to_bytes()) == 1, "une seule fois")
+    settings["on_connect"] = "none"
+    extra_answers.clear()
+
+    # sirene --anc=next : mode suivant (désactivé → réduction de bruit), sans fenêtre
+    nxt = Packet.write(b"\x2b\x04", [(1, bytes((1, 0xff)))])
+    fakes[-1].answer(nxt, Packet(b"\x2b\x04", [(2, 0)]))
+    check(app.anc_command("next"), "« --anc=next » accepté")
+    yield Wait(3, until=lambda: nxt.to_bytes() in fakes[-1].sent)
+    check(nxt.to_bytes() in fakes[-1].sent, "« --anc=next » : mode suivant envoyé")
+    check(not app.anc_command("n'importe quoi"), "mode inconnu refusé")
+    watchers[0].announce(False)
+    yield Wait(0.4)
+    check(not app.anc_command("next"), "sans écouteurs : « --anc » ne fait rien")
+
+
+@step
 def modele_inconnu(win):
     watchers[0].announce(True, name="Souris")
     yield Wait(0.4)
-    check(app.state == "none" and len(fakes) == 2, "appareil non pris en charge : rien n'est tenté")
+    check(app.state == "none" and len(fakes) == 3, "appareil non pris en charge : rien n'est tenté")
 
 
 @step

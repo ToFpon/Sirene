@@ -11,75 +11,79 @@ msgstr ""
 msgid "Démarrer sans fenêtre, dans la barre du haut"
 msgstr ""
 
-#: sirene/app.py:246
+#: sirene/app.py:56
+msgid "Contrôle du bruit : off, cancellation, awareness ou next (pour un raccourci clavier)"
+msgstr ""
+
+#: sirene/app.py:287
 msgid "Le canal des écouteurs ne répond pas, ou un autre programme l'occupe (OpenFreebuds, MyBuds…). Fermez-le, puis réessayez."
 msgstr ""
 
-#: sirene/app.py:444
+#: sirene/app.py:487
 msgid "Protocole et pilotes"
 msgstr ""
 
-#: sirene/app.py:447
+#: sirene/app.py:490
 msgid "Remerciements"
 msgstr ""
 
-#: sirene/app.py:333
+#: sirene/app.py:376
 msgid "Les écouteurs n'ont pas pris en compte ce réglage"
 msgstr ""
 
-#: sirene/app.py:375 sirene/ui/window.py:322
+#: sirene/app.py:418 sirene/ui/window.py:322
 msgid "Connecté"
 msgstr ""
 
-#: sirene/app.py:375
+#: sirene/app.py:418
 msgid "Déconnecté"
 msgstr ""
 
-#: sirene/app.py:402
+#: sirene/app.py:445
 msgid "G"
 msgstr ""
 
-#: sirene/app.py:402
+#: sirene/app.py:445
 msgid "D"
 msgstr ""
 
-#: sirene/app.py:402 sirene/ui/window.py:197
+#: sirene/app.py:445 sirene/ui/window.py:197
 msgid "Boîtier"
 msgstr ""
 
-#: sirene/app.py:442
+#: sirene/app.py:485
 msgid "Réglages des écouteurs HUAWEI FreeBuds"
 msgstr ""
 
-#: sirene/app.py:419
+#: sirene/app.py:462
 msgid "Afficher Sirène"
 msgstr ""
 
-#: sirene/app.py:419 sirene/ui/window.py:491
+#: sirene/app.py:462 sirene/ui/window.py:491
 msgid "Quitter"
 msgstr ""
 
-#: sirene/app.py:388
+#: sirene/app.py:431
 msgid "Écouteur gauche : {0} %"
 msgstr ""
 
-#: sirene/app.py:388
+#: sirene/app.py:431
 msgid "Écouteur droit : {0} %"
 msgstr ""
 
-#: sirene/app.py:389
+#: sirene/app.py:432
 msgid "Batterie faible"
 msgstr ""
 
-#: sirene/app.py:399 sirene/ui/window.py:496
+#: sirene/app.py:442 sirene/ui/window.py:496
 msgid "Aucun écouteur connecté"
 msgstr ""
 
-#: sirene/app.py:400 sirene/ui/window.py:545
+#: sirene/app.py:443 sirene/ui/window.py:545
 msgid "Connexion à {0}…"
 msgstr ""
 
-#: sirene/app.py:399 sirene/ui/window.py:547
+#: sirene/app.py:442 sirene/ui/window.py:547
 msgid "Impossible de joindre {0}"
 msgstr ""
 
@@ -131,11 +135,11 @@ msgstr ""
 msgid "Désactivé"
 msgstr ""
 
-#: sirene/ui/labels.py:13
+#: sirene/ui/labels.py:13 sirene/ui/preferences.py:81
 msgid "Réduction de bruit"
 msgstr ""
 
-#: sirene/ui/labels.py:14
+#: sirene/ui/labels.py:14 sirene/ui/preferences.py:82
 msgid "Transparence"
 msgstr ""
 
@@ -287,68 +291,116 @@ msgstr ""
 msgid "Glisser sur la tige"
 msgstr ""
 
-#: sirene/ui/preferences.py:41
+#: sirene/ui/preferences.py:48
 msgid "Style"
 msgstr ""
 
-#: sirene/ui/preferences.py:33 sirene/ui/window.py:489
+#: sirene/ui/preferences.py:40 sirene/ui/window.py:489
 msgid "Préférences"
 msgstr ""
 
-#: sirene/ui/preferences.py:39
+#: sirene/ui/preferences.py:46
 msgid "Général"
 msgstr ""
 
-#: sirene/ui/preferences.py:40
+#: sirene/ui/preferences.py:47
 msgid "Apparence"
 msgstr ""
 
-#: sirene/ui/preferences.py:41 sirene/ui/preferences.py:46
+#: sirene/ui/preferences.py:48 sirene/ui/preferences.py:53
 msgid "Comme le système"
 msgstr ""
 
-#: sirene/ui/preferences.py:41
+#: sirene/ui/preferences.py:48
 msgid "Clair"
 msgstr ""
 
-#: sirene/ui/preferences.py:41
+#: sirene/ui/preferences.py:48
 msgid "Sombre"
 msgstr ""
 
-#: sirene/ui/preferences.py:46 sirene/ui/window.py:259
+#: sirene/ui/preferences.py:53 sirene/ui/window.py:259
 msgid "Langue"
 msgstr ""
 
-#: sirene/ui/preferences.py:47
+#: sirene/ui/preferences.py:54
 msgid "Appliquée au prochain démarrage"
 msgstr ""
 
-#: sirene/ui/preferences.py:49
+#: sirene/ui/preferences.py:56
 msgid "Session"
 msgstr ""
 
-#: sirene/ui/preferences.py:50
+#: sirene/ui/preferences.py:57
 msgid "Lancer à l'ouverture de session"
 msgstr ""
 
-#: sirene/ui/preferences.py:51
+#: sirene/ui/preferences.py:58
 msgid "Sirène démarre sans fenêtre, dans la barre du haut"
 msgstr ""
 
-#: sirene/ui/preferences.py:54
+#: sirene/ui/preferences.py:61
 msgid "Icône seulement avec les écouteurs"
 msgstr ""
 
-#: sirene/ui/preferences.py:56
+#: sirene/ui/preferences.py:63
 msgid "Sirène attend en silence et n'apparaît dans la barre du haut que pendant que vos écouteurs sont connectés"
 msgstr ""
 
-#: sirene/ui/preferences.py:64
+#: sirene/ui/preferences.py:69
+msgid "Écouteurs"
+msgstr ""
+
+#: sirene/ui/preferences.py:70
+msgid "À la connexion des écouteurs"
+msgstr ""
+
+#: sirene/ui/preferences.py:77
+msgid "Raccourcis clavier"
+msgstr ""
+
+#: sirene/ui/preferences.py:78
+msgid "Dans Paramètres → Clavier → Raccourcis personnalisés, ajoutez un raccourci avec l'une de ces commandes (sous X11 comme sous Wayland)"
+msgstr ""
+
+#: sirene/ui/preferences.py:80
+msgid "Mode suivant du contrôle du bruit"
+msgstr ""
+
+#: sirene/ui/preferences.py:83
+msgid "Contrôle du bruit désactivé"
+msgstr ""
+
+#: sirene/ui/preferences.py:95
 msgid "Fonctionnalités"
 msgstr ""
 
-#: sirene/ui/preferences.py:66
+#: sirene/ui/preferences.py:97
 msgid "Chaque fonctionnalité s'active ou se coupe tout de suite, sans redémarrer Sirène"
+msgstr ""
+
+#: sirene/ui/preferences.py:71
+msgid "Ne rien faire"
+msgstr ""
+
+#: sirene/ui/preferences.py:71
+msgid "Activer la réduction de bruit"
+msgstr ""
+
+#: sirene/ui/preferences.py:71
+msgid "Activer la transparence"
+msgstr ""
+
+#: sirene/ui/preferences.py:72
+msgid "Désactiver le contrôle du bruit"
+msgstr ""
+
+#: sirene/ui/preferences.py:72
+msgid "Ouvrir la fenêtre de Sirène"
+msgstr ""
+
+#: sirene/ui/preferences.py:85
+msgid "Copier"
 msgstr ""
 
 #: sirene/ui/window.py:195
