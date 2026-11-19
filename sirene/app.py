@@ -56,6 +56,8 @@ class SireneApp(Adw.Application):
         self._worn = None
         self.tray = None
         self._notifier = None
+        self._volume = None
+        self._osd_settings = None
         self._held = False
         self._bt_seen: dict[str, bool] = {}     # adresse → connecté (notifications)
         self._low: dict[str, int] = {}          # écouteur → dernier seuil signalé (20, 10)
@@ -134,6 +136,7 @@ class SireneApp(Adw.Application):
     def _on_setting(self, key, _value):
         if key == "features":
             self._sync_tray()
+            self._sync_volume()
 
     def _sync_tray(self):
         if features.enabled("tray"):
@@ -148,6 +151,8 @@ class SireneApp(Adw.Application):
                 self._release()                 # plus d'icône : rien ne retient Sirène en arrière-plan
 
     def do_shutdown(self):
+        if self._volume is not None:
+            self._volume.stop()
         if self.tray is not None:
             self.tray.hide()
         if self.device is not None:
@@ -249,6 +254,7 @@ class SireneApp(Adw.Application):
 
     def _set_state(self, state):
         self.state = state
+        self._sync_volume()
         if self.window is not None:
             self.window.show_state()
         if self.tray is not None:
@@ -308,6 +314,29 @@ class SireneApp(Adw.Application):
         if on_fail:
             on_fail()
         return False
+
+    # --- volume (fonctionnalité volume_osd, comme bt-notify) ---
+
+    def _sync_volume(self):
+        """`pactl subscribe` seulement pendant que les écouteurs sont connectés."""
+        want = self.state == "device" and features.enabled("volume_osd") and not features.blocked("volume_osd")
+        if want and self._volume is None:
+            from .volume_osd import VolumeWatcher
+            self._volume = VolumeWatcher(self._show_volume)
+            self._volume.start()
+        elif not want and self._volume is not None:
+            self._volume.stop()
+            self._volume = None
+
+    def _show_volume(self, percent):
+        from . import volume_osd
+        if self.bt is None:
+            return
+        if self._osd_settings is None:
+            self._osd_settings = volume_osd.osd_settings()
+        if self._osd_settings is not None:
+            self._osd_settings.set_string("showosd", volume_osd.osd_command((self.bt.icon or "audio-headphones") + "-symbolic",
+                                                                   self.bt.name, percent))
 
     # --- notifications ---
 

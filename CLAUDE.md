@@ -19,8 +19,9 @@ les premiers écouteurs à réduction de bruit.
   ui/common, préférences) reprise de Télémaque.
 - Dialogues : de vraies fenêtres (`common.AlertDialog`, `common.DialogWindow`, `Adw.PreferencesWindow`,
   `Adw.AboutWindow`). Thème du système : `data/base.css` ne fait que de la mise en page.
-- Chaque fonctionnalité facultative est dans `sirene/features.py` (auto_pause, tray, notify_connect, battery_alert)
-  et se consulte au moment de l'usage.
+- Chaque fonctionnalité facultative est dans `sirene/features.py` (auto_pause, tray, notify_connect, battery_alert,
+  volume_osd) et se consulte au moment de l'usage. `available` / `missing` : composant absent → interrupteur grisé
+  avec la raison (`features.blocked`).
 - Toute fonction passée à `idle_add` / `timeout_add` renvoie False (sauf répétition voulue).
 - Reprise d'OpenFreebuds (melianmiko/OpenFreebuds, GPL-3.0 ; FreeBuds 7i : pull request #135 de vicrodh,
   fork vicrodh/OpenFreebuds, branche feature/freebuds-7i) : protocole et pilotes réécrits, à créditer dans
@@ -82,6 +83,14 @@ les premiers écouteurs à réduction de bruit.
   Contenu : connexion / déconnexion de TOUT appareil Bluetooth (`notify_connect`, comme
   bt-notify ; état connu au démarrage = pas de notification), batterie faible (`battery_alert`) : un écouteur sous
   20 % puis sous 10 %, une fois par seuil, réarmé au-dessus de 30 % ; 0 % ignoré (rangé dans le boîtier).
+- Affichage du volume (`volume_osd`, comme bt-notify ; `sirene/volume_osd.py`) : `pactl subscribe` (LC_ALL=C, lu
+  dans la boucle GLib, seulement pendant que les écouteurs sont connectés), « 'change' on sink » → `pactl
+  get-sink-volume @DEFAULT_SINK@` (une lecture à la fois, rafales regroupées), affiché par l'extension « Custom OSD »
+  (neuromorph/custom-osd, celle de Tof) : clé `showosd` = « aléa,icône,texte,niveau » (l'extension découpe aux
+  virgules : retirées du nom ; niveau plafonné à 1). Schéma pris dans le système ou dans le dossier de l'extension
+  (~/.local/share/gnome-shell/extensions/custom-osd@neuromorph/schemas). Volume de départ non affiché. GNOME ne
+  donne pas son encart aux applications ; une fenêtre à nous ne se placerait pas sous Wayland. Testé :
+  `test_volume_osd` (faux pactl, vrai schéma compilé, réglages en mémoire), étape `volume_affiche` d'ui_smoke.
 - `ui/window.py` : pages « aucun écouteur », « connexion… », « impossible de joindre », page des écouteurs
   (`DevicePage`) en ONGLETS (demande de Tof) — État (piles, contrôle du bruit, port), Gestes (tapes, appui long,
   glisser), Son, Appareil (double connexion, langue, infos) ; `Adw.ViewStack` (classe « final » : porté par un
@@ -133,5 +142,6 @@ sable : les essais réels sont faits par Tof.
 4. FAIT (0.0.2) : icône de la barre (batterie, contrôle du bruit), arrière-plan, lancement à l'ouverture de
    session, notifications de connexion, alerte batterie faible. Reste : action à la connexion, raccourcis
    globaux (X11).
-5. Reprise de `bt-notify.sh` : affichage du volume (extension custom-osd de Tof : gsettings showosd).
+5. FAIT : reprise de `bt-notify.sh` (notifications, affichage du volume par Custom OSD) — Sirène remplace toute
+   la bidouille de Tof.
 6. Paquet, PPA, site.

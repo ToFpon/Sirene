@@ -7,6 +7,7 @@ Préférences → Fonctionnalités l'active ou la coupe tout de suite. (Repris d
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Callable, Optional
 
 from .i18n import tr
 from .settings import settings
@@ -19,6 +20,13 @@ class Feature:
     description: str
     icon: str
     default: bool = True
+    available: Optional[Callable[[], bool]] = None    # composant indispensable présent ? (sinon grisée)
+    missing: str = ""                                 # ce qu'il faut installer
+
+
+def _osd_available() -> bool:
+    from .volume_osd import available
+    return available()
 
 
 FEATURES = [
@@ -37,6 +45,11 @@ FEATURES = [
     Feature("battery_alert", tr("Prévenir quand la batterie est faible"),
             tr("Une notification quand un écouteur passe sous 20 %, puis sous 10 %"),
             "battery-caution-symbolic"),
+    Feature("volume_osd", tr("Afficher le volume"),
+            tr("L'encart du volume de GNOME à chaque changement, pendant que les écouteurs sont connectés (geste "
+               "de glisser compris), comme bt-notify"),
+            "audio-volume-high-symbolic", available=_osd_available,
+            missing=tr("Demande l'extension GNOME « Custom OSD » (extensions.gnome.org) et pactl")),
 ]
 
 BY_ID = {f.id: f for f in FEATURES}
@@ -48,6 +61,11 @@ def enabled(fid: str) -> bool:
         return False
     value = settings["features"].get(fid, f.default)
     return value if isinstance(value, bool) else f.default     # « "no" » écrit à la main ne vaut pas vrai
+
+
+def blocked(fid: str) -> bool:
+    f = BY_ID.get(fid)
+    return f is not None and f.available is not None and not f.available()
 
 
 def set_enabled(fid: str, value: bool):

@@ -63,6 +63,10 @@ class PreferencesWindow(Adw.PreferencesWindow):
         for f in features.FEATURES:
             row = Adw.SwitchRow(title=f.title, subtitle=f.description, active=features.enabled(f.id))
             row.add_prefix(Gtk.Image(icon_name=f.icon))
+            if features.blocked(f.id):                  # composant absent : grisée, la raison reste lisible
+                row.set_active(False)
+                row.set_subtitle(f.description + "\n⚠ " + f.missing)
+                row.set_sensitive(False)
             row.connect("notify::active", lambda r, *_, fid=f.id: features.set_enabled(fid, r.get_active()))
             self.feature_rows[f.id] = row
             group.add(row)

@@ -288,6 +288,26 @@ def barre_du_haut(win):
 
 
 @step
+def volume_affiche(win):
+    """L'application écrit bien la commande de Custom OSD (schéma compilé dans un dossier jetable)."""
+    import subprocess
+    from sirene import volume_osd
+    d = os.path.join(TMP, "osd")
+    os.makedirs(d)
+    with open(os.path.join(d, "c.gschema.xml"), "w") as fh:
+        fh.write('<schemalist><schema id="org.gnome.shell.extensions.custom-osd" '
+                 'path="/org/gnome/shell/extensions/custom-osd/"><key type="s" name="showosd">'
+                 "<default>''</default></key></schema></schemalist>")
+    subprocess.run(["glib-compile-schemas", d], check=True)
+    volume_osd.SCHEMA_DIRS = lambda: [d]
+    app._osd_settings = volume_osd.osd_settings(Gio.memory_settings_backend_new())
+    app._show_volume(42)
+    parts = app._osd_settings.get_string("showosd").split(",")
+    check(parts[1:] == ["audio-headphones-symbolic", "HUAWEI FreeBuds 6i", "0.42"],
+          "volume 42 % → encart « HUAWEI FreeBuds 6i », icône du casque")
+
+
+@step
 def canal_ferme_puis_rouvert(win):
     """Les écouteurs ferment leur canal alors que BlueZ les dit connectés : Sirène le rouvre."""
     first = app.device
@@ -319,6 +339,12 @@ def preferences_et_a_propos(win):
     yield Wait(0.5)
     wins = [w for w in Gtk.Window.list_toplevels() if w is not win and w.get_visible()]
     check(any(isinstance(w, Adw.PreferencesWindow) for w in wins), "préférences ouvertes")
+    prefs = [w for w in wins if isinstance(w, Adw.PreferencesWindow)]
+    if prefs:
+        osd = prefs[0].feature_rows["volume_osd"]
+        check(not osd.get_sensitive() and "Custom OSD" in osd.get_subtitle(),
+              "sans l'extension Custom OSD : « Afficher le volume » grisé, avec la raison")
+    check(app._volume is None, "sans l'extension : pactl n'est pas lancé")
     check(any(isinstance(w, Adw.AboutWindow) for w in wins), "« À propos » ouvert")
     for w in wins:
         w.close()

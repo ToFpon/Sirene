@@ -11,108 +11,120 @@ msgstr ""
 msgid "Démarrer sans fenêtre, dans la barre du haut"
 msgstr ""
 
-#: sirene/app.py:221
+#: sirene/app.py:227
 msgid "Le canal des écouteurs ne répond pas, ou un autre programme l'occupe (OpenFreebuds, MyBuds…). Fermez-le, puis réessayez."
 msgstr ""
 
-#: sirene/app.py:392
+#: sirene/app.py:424
 msgid "Protocole et pilotes"
 msgstr ""
 
-#: sirene/app.py:395
+#: sirene/app.py:427
 msgid "Remerciements"
 msgstr ""
 
-#: sirene/app.py:306
+#: sirene/app.py:313
 msgid "Les écouteurs n'ont pas pris en compte ce réglage"
 msgstr ""
 
-#: sirene/app.py:319 sirene/ui/window.py:309
+#: sirene/app.py:355 sirene/ui/window.py:311
 msgid "Connecté"
 msgstr ""
 
-#: sirene/app.py:319
+#: sirene/app.py:355
 msgid "Déconnecté"
 msgstr ""
 
-#: sirene/app.py:350
+#: sirene/app.py:382
 msgid "G"
 msgstr ""
 
-#: sirene/app.py:350
+#: sirene/app.py:382
 msgid "D"
 msgstr ""
 
-#: sirene/app.py:350 sirene/ui/window.py:190
+#: sirene/app.py:382 sirene/ui/window.py:190
 msgid "Boîtier"
 msgstr ""
 
-#: sirene/app.py:390
+#: sirene/app.py:422
 msgid "Réglages des écouteurs HUAWEI FreeBuds"
 msgstr ""
 
-#: sirene/app.py:367
+#: sirene/app.py:399
 msgid "Afficher Sirène"
 msgstr ""
 
-#: sirene/app.py:367 sirene/ui/window.py:337
+#: sirene/app.py:399 sirene/ui/window.py:339
 msgid "Quitter"
 msgstr ""
 
-#: sirene/app.py:333
-msgid "Batterie faible"
-msgstr ""
-
-#: sirene/app.py:334
+#: sirene/app.py:368
 msgid "Écouteur gauche : {0} %"
 msgstr ""
 
-#: sirene/app.py:334
+#: sirene/app.py:368
 msgid "Écouteur droit : {0} %"
 msgstr ""
 
-#: sirene/app.py:347 sirene/ui/window.py:342
+#: sirene/app.py:369
+msgid "Batterie faible"
+msgstr ""
+
+#: sirene/app.py:379 sirene/ui/window.py:344
 msgid "Aucun écouteur connecté"
 msgstr ""
 
-#: sirene/app.py:348 sirene/ui/window.py:391
+#: sirene/app.py:380 sirene/ui/window.py:393
 msgid "Connexion à {0}…"
 msgstr ""
 
-#: sirene/app.py:347 sirene/ui/window.py:393
+#: sirene/app.py:379 sirene/ui/window.py:395
 msgid "Impossible de joindre {0}"
 msgstr ""
 
-#: sirene/features.py:25
+#: sirene/features.py:33
 msgid "Pause au retrait d'un écouteur"
 msgstr ""
 
-#: sirene/features.py:26
+#: sirene/features.py:34
 msgid "Les lecteurs qui jouaient se mettent en pause quand on retire un écouteur, et reprennent quand on le remet (seulement ceux que Sirène a mis en pause)"
 msgstr ""
 
-#: sirene/features.py:29
+#: sirene/features.py:37
 msgid "Icône dans la barre du haut"
 msgstr ""
 
-#: sirene/features.py:30
+#: sirene/features.py:38
 msgid "Batterie et contrôle du bruit à portée de clic ; fermer la fenêtre laisse Sirène en arrière-plan (extension AppIndicator, présente sur Zorin et Ubuntu)"
 msgstr ""
 
-#: sirene/features.py:33
+#: sirene/features.py:41
 msgid "Prévenir des connexions Bluetooth"
 msgstr ""
 
-#: sirene/features.py:34
+#: sirene/features.py:42
 msgid "Une notification quand un appareil Bluetooth se connecte ou se déconnecte (écouteurs, souris, téléphone…), comme bt-notify"
 msgstr ""
 
-#: sirene/features.py:37
+#: sirene/features.py:45
 msgid "Prévenir quand la batterie est faible"
 msgstr ""
 
-#: sirene/features.py:38
+#: sirene/features.py:46
 msgid "Une notification quand un écouteur passe sous 20 %, puis sous 10 %"
+msgstr ""
+
+#: sirene/features.py:48
+msgid "Afficher le volume"
+msgstr ""
+
+#: sirene/features.py:49
+msgid "L'encart du volume de GNOME à chaque changement, pendant que les écouteurs sont connectés (geste de glisser compris), comme bt-notify"
+msgstr ""
+
+#: sirene/features.py:52
+msgid "Demande l'extension GNOME « Custom OSD » (extensions.gnome.org) et pactl"
 msgstr ""
 
 #: sirene/ui/labels.py:12
@@ -279,7 +291,7 @@ msgstr ""
 msgid "Style"
 msgstr ""
 
-#: sirene/ui/preferences.py:33 sirene/ui/window.py:335
+#: sirene/ui/preferences.py:33 sirene/ui/window.py:337
 msgid "Préférences"
 msgstr ""
 
@@ -303,7 +315,7 @@ msgstr ""
 msgid "Sombre"
 msgstr ""
 
-#: sirene/ui/preferences.py:46 sirene/ui/window.py:250
+#: sirene/ui/preferences.py:46 sirene/ui/window.py:251
 msgid "Langue"
 msgstr ""
 
@@ -339,31 +351,31 @@ msgstr ""
 msgid "Droit"
 msgstr ""
 
-#: sirene/ui/window.py:211
+#: sirene/ui/window.py:212
 msgid "Contrôle du bruit"
 msgstr ""
 
-#: sirene/ui/window.py:214
+#: sirene/ui/window.py:215
 msgid "Port des écouteurs"
 msgstr ""
 
-#: sirene/ui/window.py:231 sirene/ui/window.py:70
+#: sirene/ui/window.py:232 sirene/ui/window.py:70
 msgid "Son"
 msgstr ""
 
-#: sirene/ui/window.py:242
+#: sirene/ui/window.py:243
 msgid "Double connexion"
 msgstr ""
 
-#: sirene/ui/window.py:250
+#: sirene/ui/window.py:251
 msgid "Messages vocaux"
 msgstr ""
 
-#: sirene/ui/window.py:262
+#: sirene/ui/window.py:263
 msgid "À propos des écouteurs"
 msgstr ""
 
-#: sirene/ui/window.py:336
+#: sirene/ui/window.py:338
 msgid "À propos de Sirène"
 msgstr ""
 
@@ -379,110 +391,106 @@ msgstr ""
 msgid "Appareil"
 msgstr ""
 
-#: sirene/ui/window.py:205
-msgid "Mode"
-msgstr ""
-
-#: sirene/ui/window.py:222
+#: sirene/ui/window.py:223
 msgid "Tapes"
 msgstr ""
 
-#: sirene/ui/window.py:224
+#: sirene/ui/window.py:225
 msgid "Appui long"
 msgstr ""
 
-#: sirene/ui/window.py:226
+#: sirene/ui/window.py:227
 msgid "Glisser"
 msgstr ""
 
-#: sirene/ui/window.py:240
+#: sirene/ui/window.py:241
 msgid "Appareils connus"
 msgstr ""
 
-#: sirene/ui/window.py:253
+#: sirene/ui/window.py:254
 msgid "Modèle"
 msgstr ""
 
-#: sirene/ui/window.py:253
+#: sirene/ui/window.py:254
 msgid "Micrologiciel"
 msgstr ""
 
-#: sirene/ui/window.py:254
+#: sirene/ui/window.py:255
 msgid "Matériel"
 msgstr ""
 
-#: sirene/ui/window.py:254
+#: sirene/ui/window.py:255
 msgid "Numéro de série"
 msgstr ""
 
-#: sirene/ui/window.py:255
+#: sirene/ui/window.py:256
 msgid "Numéro de série, gauche"
 msgstr ""
 
-#: sirene/ui/window.py:256
+#: sirene/ui/window.py:257
 msgid "Numéro de série, droit"
 msgstr ""
 
-#: sirene/ui/window.py:309
+#: sirene/ui/window.py:311
 msgid "En lecture"
 msgstr ""
 
-#: sirene/ui/window.py:343
+#: sirene/ui/window.py:345
 msgid "Connectez vos FreeBuds en Bluetooth : Sirène les trouve toute seule. Modèles pris en charge : FreeBuds 4i, 6i et 7i."
 msgstr ""
 
-#: sirene/ui/window.py:349
+#: sirene/ui/window.py:351
 msgid "Réessayer"
 msgstr ""
 
-#: sirene/ui/window.py:211
+#: sirene/ui/window.py:212
 msgid "Niveau"
 msgstr ""
 
-#: sirene/ui/window.py:215
+#: sirene/ui/window.py:216
 msgid "Détection du port"
 msgstr ""
 
-#: sirene/ui/window.py:216
+#: sirene/ui/window.py:217
 msgid "Les écouteurs signalent quand on les retire : la pause automatique en a besoin"
 msgstr ""
 
-#: sirene/ui/window.py:232
+#: sirene/ui/window.py:233
 msgid "Égaliseur"
 msgstr ""
 
-#: sirene/ui/window.py:233
+#: sirene/ui/window.py:234
 msgid "Priorité"
 msgstr ""
 
-#: sirene/ui/window.py:234
+#: sirene/ui/window.py:235
 msgid "Faible latence"
 msgstr ""
 
-#: sirene/ui/window.py:235
+#: sirene/ui/window.py:236
 msgid "Moins de décalage entre l'image et le son (jeux, vidéos), au prix de la qualité"
 msgstr ""
 
-#: sirene/ui/window.py:243
+#: sirene/ui/window.py:244
 msgid "Connexion à deux appareils"
 msgstr ""
 
-#: sirene/ui/window.py:244
+#: sirene/ui/window.py:245
 msgid "Rester relié au téléphone et à l'ordinateur à la fois"
 msgstr ""
 
-#: sirene/ui/window.py:309
+#: sirene/ui/window.py:311
 msgid "Pas connecté"
 msgstr ""
 
-#: sirene/ui/window.py:339
+#: sirene/ui/window.py:341
 msgid "Menu principal"
 msgstr ""
 
-#: sirene/ui/window.py:274
+#: sirene/ui/window.py:275
 msgid "Porté"
 msgstr ""
 
-#: sirene/ui/window.py:274
+#: sirene/ui/window.py:275
 msgid "Retiré"
 msgstr ""
