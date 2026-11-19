@@ -1,3 +1,11 @@
+sirene (0.1.1~noble1) noble; urgency=medium
+
+  * Le lancement à l'ouverture de session est activé au premier lancement :
+    Sirène attend alors en arrière-plan et apparaît quand les écouteurs se
+    connectent (décochable dans les Préférences).
+
+ -- Tof <nourpon@gmail.com>  Thu, 19 Nov 2026 20:22:17 +0000
+
 sirene (0.1.0~noble1) noble; urgency=medium
 
   * Première version : réglages des HUAWEI FreeBuds 6i, 7i et 4i (contrôle
