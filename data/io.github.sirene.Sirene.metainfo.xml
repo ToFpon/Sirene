@@ -75,9 +75,10 @@
       <description>
         <p>First version.</p>
         <ul>
-          <li>Settings for HUAWEI FreeBuds 6i, 7i and 4i: noise control, gestures, equalizer, sound priority, low latency, wear detection, dual connect, batteries</li>
+          <li>Settings for HUAWEI FreeBuds 6i, 7i and 4i: noise control, gestures, equalizer with custom presets, sound priority, low latency, wear detection, dual connect, batteries</li>
           <li>Pauses the players when an earbud is taken out, resumes them when it is put back</li>
-          <li>Icon in the top bar while the earphones are connected, start at login, notifications of connections and low battery, volume pop-up with the Custom OSD extension</li>
+          <li>Icon in the top bar while the earphones are connected, start at login, action when they connect, keyboard shortcuts (sirene --anc)</li>
+          <li>Notifications of connections and low battery, volume pop-up with the Custom OSD extension</li>
         </ul>
       </description>
     </release>
