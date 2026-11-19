@@ -190,6 +190,36 @@ class DeviceTest(unittest.TestCase):
         self.assertTrue(wait_for(lambda: dev.get("dual_connect", "devices")["aabbccddeeff"]["connected"]))
         dev.stop()
 
+    def test_info_6i_capture(self):
+        """Trame 0107 des 6i de Tof (capture MyBuds) : textes lisibles, binaire en hexadécimal."""
+        raw = {2: "0153", 3: "484c324f52434d4c",
+               7: "4861726d6f6e794f5320362e302e302e32393228463030314830303343393029",
+               9: "324e4754513234423036303035373834", 10: "42544654303031392d303030313533",
+               15: "4254465430303139",
+               24: "4c2d545134383730323442323030393839342c522d54513438373332344232303034333235",
+               25: "02", 27: "b5dc03f78a30"}
+        self.fake.answer(Packet.read(b"\x01\x07", range(32)),
+                         Packet(b"\x01\x07", [(k, bytes.fromhex(v)) for k, v in raw.items()]))
+        dev, _ = start([h.Info()], self.fake)
+        info = dev.store["info"]
+        self.assertEqual(info["software"], "HarmonyOS 6.0.0.292(F001H003C90)")
+        self.assertEqual((info["model"], info["hardware"]), ("BTFT0019", "HL2ORCML"))
+        self.assertEqual((info["serial_left"], info["serial_right"]), ("TQ487024B2009894", "TQ487324B2004325"))
+        self.assertEqual((info["field_25"], info["field_27"]), ("02", "b5dc03f78a30"))
+        dev.stop()
+
+    def test_optional_wear_read_6i(self):
+        """6i : lecture du port tentée une fois ; sans réponse, rien d'échoué et pas de nouvel essai."""
+        dev, _ = start([h.InEar(wear=True, wear_read=True, optional=True)], self.fake)
+        self.assertEqual(dev.failed, [])
+        self.assertEqual(sum(raw[4:6] == b"\x2b\x25" for raw in self.fake.sent), 1)
+        self.fake.answer(GET_WEAR, Packet(b"\x2b\x25", [(1, 1), (2, 1), (3, 0), (4, 0)]))
+        dev.stop()
+        self.fake = FakeBuds({GET_WEAR.to_bytes(): [Packet(b"\x2b\x25", [(1, 1), (2, 1)]).to_bytes()]})
+        dev, _ = start([h.InEar(wear=True, wear_read=True, optional=True)], self.fake)
+        self.assertIs(dev.get("state", "in_ear"), True, "s'ils répondent, l'état est juste dès le départ")
+        dev.stop()
+
     def test_silent_handler_does_not_block_others(self):
         """Une fonction sans réponse est notée, les suivantes démarrent quand même."""
         self.fake.answer(GET_ANC, bytes.fromhex("5a0007002b2a010203015043"))

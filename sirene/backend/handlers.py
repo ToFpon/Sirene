@@ -65,15 +65,18 @@ class Info(Handler):
                     pass
                 continue
             name = self.names.get(kind, f"field_{kind}")
-            for enc in ("utf8", "gbk"):
-                try:
-                    out[name] = raw.decode(enc)
-                    break
-                except UnicodeDecodeError:
-                    continue
-            else:
-                out[name] = raw.hex()
+            out[name] = _text_or_hex(raw)
         dev.update("info", out)
+
+
+def _text_or_hex(raw: bytes) -> str:
+    """Texte UTF-8 lisible, sinon l'hexadécimal. Plus de repli GBK (repris d'OpenFreebuds) : sur les 6i de Tof,
+    une adresse MAC (p27) y devenait « 弟鲓0 », et un octet 02 (p25) un caractère de contrôle."""
+    try:
+        text = raw.decode("utf8")
+    except UnicodeDecodeError:
+        return raw.hex()
+    return text if text.isprintable() else raw.hex()
 
 
 class Battery(Handler):
@@ -107,14 +110,22 @@ class InEar(Handler):
     reste à 01 (gauche jamais signalé, vu chez Tof)."""
     id = "in_ear"
 
-    def __init__(self, wear: bool = False, wear_read: bool = False):
-        self.wear, self.wear_read = wear, wear_read
+    def __init__(self, wear: bool = False, wear_read: bool = False, optional: bool = False):
+        """optional : lecture tentée une fois, sans réponse = rien (6i : à vérifier chez Tof ; sans elle,
+        « pas portés » jusqu'au premier geste)."""
+        self.wear, self.wear_read, self.optional = wear, wear_read, optional
         self.commands = (b"\x2b\x03", CMD_WEAR) if wear else (b"\x2b\x03",)
+        if optional:
+            self.attempts = 1
 
     def init(self, dev):
         dev.put("state", "in_ear", False)
         if self.wear_read:
-            self.on_packet(dev, dev.ask(Packet.read(CMD_WEAR, [1, 2])))
+            try:
+                self.on_packet(dev, dev.ask(Packet.read(CMD_WEAR, [1, 2])))
+            except TimeoutError:
+                if not self.optional:
+                    raise
 
     def on_packet(self, dev, pkt):
         if pkt.cmd == CMD_WEAR:

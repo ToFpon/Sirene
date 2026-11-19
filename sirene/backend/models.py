@@ -23,11 +23,13 @@ def _4i():
 
 
 def _6i():
-    return [h.Info(), h.InEar(wear=True), h.Battery(), h.Anc(levels=True, dynamic=True),
+    # Port lu en DERNIER : les 6i ne répondent peut-être pas (une seule tentative, sans bloquer le reste).
+    return [h.Info(), h.Battery(), h.Anc(levels=True, dynamic=True),
             h.DoubleTap(in_call=True), h.TripleTap(), h.LongTap(right=True), h.Swipe(), h.AutoPause(),
             h.SoundQuality(), h.LowLatency(),
             h.Equalizer(presets=h.BUILT_IN, fake_built_in=True, custom=True),
-            h.VoiceLanguage(), h.DualConnect(auto_connect=False)]
+            h.VoiceLanguage(), h.DualConnect(auto_connect=False),
+            h.InEar(wear=True, wear_read=True, optional=True)]
 
 
 def _7i():
