@@ -420,11 +420,11 @@ class SireneApp(Adw.Application):
 
     # --- notifications ---
 
-    def notify(self, nid, title, body, icon, low=False):
+    def notify(self, nid, title, body, icon, transient=False):
         if self._notifier is None:
             from .notify import Notifier
             self._notifier = Notifier(self)
-        self._notifier.send(nid, title, body, icon, low)
+        self._notifier.send(nid, title, body, icon, transient)
 
     def _notify_bt(self, d):
         before = self._bt_seen.get(d.address)
@@ -433,7 +433,7 @@ class SireneApp(Adw.Application):
             return
         # comme bt-notify : l'icône de l'appareil (BlueZ « Icon ») à la connexion, Bluetooth barré au départ
         self.notify("bt-" + d.address, d.name, tr("Connecté") if d.connected else tr("Déconnecté"),
-                    (d.icon or "bluetooth") if d.connected else "bluetooth-disabled", low=True)
+                    (d.icon or "bluetooth") if d.connected else "bluetooth-disabled", transient=True)
 
     def _battery_alert(self, side, level):
         if not isinstance(level, int) or level <= 0:    # 0 : écouteur rangé dans le boîtier (vu sur les 6i)

@@ -90,6 +90,9 @@ les premiers écouteurs à réduction de bruit.
   Gio.Notification d'une application sans .desktop installé (lookup_app(<id>.desktop) → InvalidAppError). Sans
   lanceur installé : org.freedesktop.Notifications (comme notify-send de bt-notify), remplacement par identifiant ;
   installé (`data/io.github.sirene.Sirene.desktop`) : Gio.Notification. Testé : `test_notify` (faux serveur).
+  Connexions Bluetooth : priorité NORMALE + éphémères (`transient`, hint « transient », comme `notify-send -e -u
+  normal` de bt-notify), toujours par org.freedesktop.Notifications (Gio.Notification n'a pas d'éphémère). Vu chez
+  Tof : en priorité BASSE (0.1.2), GNOME ne les affichait pas, elles allaient directement dans la liste.
   Contenu : connexion / déconnexion de TOUT appareil Bluetooth (`notify_connect`, comme
   bt-notify ; état connu au démarrage = pas de notification), batterie faible (`battery_alert`) : un écouteur sous
   20 % puis sous 10 %, une fois par seuil, réarmé au-dessus de 30 % ; 0 % ignoré (rangé dans le boîtier).

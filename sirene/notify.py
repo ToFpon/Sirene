@@ -30,14 +30,15 @@ class Notifier:
         self.app = app
         self._ids: dict[str, int] = {}           # notre identifiant → numéro rendu par le serveur (remplacement)
 
-    def send(self, nid: str, title: str, body: str, icon: str, low: bool = False):
-        """low : priorité basse (connexions Bluetooth, demande de Tof) — affichée sans insister."""
-        if installed():
+    def send(self, nid: str, title: str, body: str, icon: str, transient: bool = False):
+        """transient : affichée normalement mais pas gardée dans la liste des notifications, comme
+        `notify-send -e -u normal` de bt-notify (connexions Bluetooth). Vu chez Tof : en priorité BASSE, GNOME ne
+        l'affichait pas, il la rangeait directement dans la liste. Gio.Notification n'a pas d'« éphémère » :
+        ces notifications passent toujours par org.freedesktop.Notifications."""
+        if installed() and not transient:
             n = Gio.Notification.new(title)
             n.set_body(body)
             n.set_icon(Gio.ThemedIcon.new(icon))
-            if low:
-                n.set_priority(Gio.NotificationPriority.LOW)
             self.app.send_notification(nid, n)
             return
         try:
@@ -53,5 +54,6 @@ class Notifier:
         bus.call("org.freedesktop.Notifications", "/org/freedesktop/Notifications", "org.freedesktop.Notifications",
                  "Notify", GLib.Variant("(susssasa{sv}i)", (APP_NAME, self._ids.get(nid, 0), icon, title, body, [], {
                      "desktop-entry": GLib.Variant("s", APP_ID),
-                     "urgency": GLib.Variant("y", 0 if low else 1)}, -1)),          # 0 = low, comme notify-send -u low
+                     "urgency": GLib.Variant("y", 1),                                # normale (-u normal)
+                     "transient": GLib.Variant("b", transient)}, -1)),               # -e de notify-send
                  GLib.VariantType("(u)"), Gio.DBusCallFlags.NONE, 3000, None, done)

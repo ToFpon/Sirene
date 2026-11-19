@@ -58,15 +58,31 @@ class NotifyTest(unittest.TestCase):
     def tearDown(self):
         self.conn.close_sync(None)
 
+    def test_transient_even_when_installed(self):
+        """Installée : les connexions passent quand même par org.freedesktop.Notifications (éphémères) ; le reste
+        par Gio.Notification."""
+        from unittest import mock
+        app = FakeApp()
+        sent = []
+        app.send_notification = lambda nid, notif: sent.append(nid)
+        n = notify.Notifier(app)
+        with mock.patch.object(notify, "installed", lambda: True):
+            n.send("bt-x", "Buds", "Connecté", "audio-headphones", transient=True)
+            self.assertTrue(pump(lambda: len(self.calls) == 1))
+            n.send("battery-left", "Batterie faible", "12 %", "battery-caution")
+        self.assertEqual(sent, ["battery-left"])
+
     def test_freedesktop_without_desktop_file(self):
         self.assertFalse(notify.installed(), "lancé depuis les sources")
         n = notify.Notifier(FakeApp())
-        n.send("bt-x", "HUAWEI FreeBuds 6i", "Connecté", "audio-headphones", low=True)
+        n.send("bt-x", "HUAWEI FreeBuds 6i", "Connecté", "audio-headphones", transient=True)
         self.assertTrue(pump(lambda: len(self.calls) == 1 and "bt-x" in n._ids))
         app_name, replaces, icon, title, body = self.calls[0][:5]
         self.assertEqual((app_name, replaces, icon, title, body),
                          ("Sirène", 0, "audio-headphones", "HUAWEI FreeBuds 6i", "Connecté"))
-        self.assertEqual(self.calls[0][6]["urgency"], 0, "priorité basse (urgency 0, comme notify-send -u low)")
+        hints = self.calls[0][6]
+        self.assertEqual((hints["urgency"], hints["transient"]), (1, True),
+                         "priorité normale, éphémère (comme notify-send -e -u normal de bt-notify)")
         n.send("bt-x", "HUAWEI FreeBuds 6i", "Déconnecté", "bluetooth-disabled")
         self.assertTrue(pump(lambda: len(self.calls) == 2))
         self.assertEqual(self.calls[1][1], 41, "même appareil : la notification d'avant est remplacée")
