@@ -98,7 +98,6 @@ class Tray:
         self.app = app
         self.conn = None
         self.name = f"org.kde.StatusNotifierItem-{os.getpid()}-1"
-        self._owner = 0
         self._ids: list[int] = []
         self.revision = 1
         self.registered = False          # accepté par un StatusNotifierWatcher
@@ -109,27 +108,32 @@ class Tray:
 
     @property
     def active(self) -> bool:
-        return bool(self._owner)
+        return self.conn is not None
 
     def show(self):
-        if self._owner:
+        """L'icône a SA connexion au bus de session : la fermer la retire tout de suite. Vu chez Tof : sur la
+        connexion de l'application, rendre le nom ne suffisait pas — l'extension AppIndicator suit le nom unique
+        de la connexion, l'icône restait après le départ des écouteurs, jusqu'à la sortie de Sirène."""
+        if self.conn is not None:
             return
-        self._owner = Gio.bus_own_name(Gio.BusType.SESSION, self.name, Gio.BusNameOwnerFlags.NONE,
-                                       self._on_bus, None, None)
+        try:
+            conn = Gio.DBusConnection.new_for_address_sync(
+                Gio.dbus_address_get_for_bus_sync(Gio.BusType.SESSION, None),
+                Gio.DBusConnectionFlags.AUTHENTICATION_CLIENT | Gio.DBusConnectionFlags.MESSAGE_BUS_CONNECTION,
+                None, None)
+            conn.call_sync("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus", "RequestName",
+                           GLib.Variant("(su)", (self.name, 4)), GLib.VariantType("(u)"),  # 4 : DO_NOT_QUEUE
+                           Gio.DBusCallFlags.NONE, 3000, None)
+        except GLib.Error:
+            return                              # pas de bus de session : pas d'icône
+        self._on_bus(conn, self.name)
 
     def hide(self):
-        if not self._owner:
-            return
-        if self.conn is not None:
-            for i in self._ids:
-                self.conn.unregister_object(i)
-            if self._watch:
-                self.conn.signal_unsubscribe(self._watch)
+        conn, self.conn = self.conn, None
         self._ids, self._watch = [], 0
-        Gio.bus_unown_name(self._owner)
-        self._owner = 0
-        self.conn = None
         self.registered = False
+        if conn is not None:
+            conn.close(None, None, None)        # nom unique et nom de l'icône disparaissent : l'icône s'en va
 
     def _on_bus(self, conn, _name):
         self.conn = conn
@@ -148,9 +152,11 @@ class Tray:
         def done(conn, res):
             try:
                 conn.call_finish(res)
-                self.registered = True
+                ok = True
             except GLib.Error:
-                self.registered = False          # pas de barre AppIndicator : rien ne s'affiche
+                ok = False                       # pas de barre AppIndicator : rien ne s'affiche
+            if conn is self.conn:                # réponse d'une connexion déjà fermée (icône cachée entre-temps)
+                self.registered = ok
         self.conn.call(WATCHER, "/StatusNotifierWatcher", WATCHER, "RegisterStatusNotifierItem",
                        GLib.Variant("(s)", (self.name,)), None, Gio.DBusCallFlags.NONE, 3000, None, done)
 

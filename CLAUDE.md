@@ -76,7 +76,11 @@ les premiers écouteurs à réduction de bruit.
   sinon quitte. Réglage `tray_only_connected` (vrai par défaut, demande de Tof : « démarrer seulement à la
   connexion des écouteurs ») : Sirène tourne dès l'ouverture de session (aucune interrogation, rien ne coûte), mais
   l'icône n'apparaît que pendant que des écouteurs pris en charge sont connectés (`_sync_tray`, à chaque état).
-  Un vrai démarrage « à la connexion » demanderait de toute façon un programme qui écoute BlueZ. `--background` (lancement
+  Un vrai démarrage « à la connexion » demanderait de toute façon un programme qui écoute BlueZ.
+  PIÈGE vu chez Tof : l'icône restait après la déconnexion, jusqu'à la sortie de Sirène — l'extension AppIndicator
+  suit le nom UNIQUE de la connexion qui a enregistré l'icône ; rendre le nom « org.kde.StatusNotifierItem-… » ne
+  suffit pas. L'icône a donc SA connexion au bus de session (`Tray.show`), fermée par `hide` : l'icône s'en va
+  tout de suite. Testé : la fausse barre d'ui_smoke vérifie que ce nom unique disparaît (échoue sur l'ancien code). `--background` (lancement
   à l'ouverture de session, `autostart.py` : ~/.config/autostart, `sirene --background` installé, sinon ce
   Python + bin/sirene) : pas de fenêtre. Icônes `data/icons/hicolor` (index.theme OBLIGATOIRE, cf. Ithaca) ;
   couleur corail (Odysseus bleu, Ithaca violet, Nausicaa orange, Calypso turquoise, Télémaque vert).

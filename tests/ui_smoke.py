@@ -71,7 +71,7 @@ try:
         Gio.dbus_address_get_for_bus_sync(Gio.BusType.SESSION, None),
         Gio.DBusConnectionFlags.AUTHENTICATION_CLIENT | Gio.DBusConnectionFlags.MESSAGE_BUS_CONNECTION, None, None)
     _snw.register_object("/StatusNotifierWatcher", Gio.DBusNodeInfo.new_for_xml(SNW_XML).interfaces[0],
-                         lambda c, s, p, i, m, params, inv: (snw_registered.append(params.unpack()[0]),
+                         lambda c, s, p, i, m, params, inv: (snw_registered.append((s, params.unpack()[0])),
                                                              inv.return_value(None)), None, None)
     _snw.call_sync("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus", "RequestName",
                    GLib.Variant("(su)", ("org.kde.StatusNotifierWatcher", 0)), None, Gio.DBusCallFlags.NONE, 2000, None)
@@ -325,6 +325,18 @@ def deconnexion(win):
     check(win.stack.get_visible_child_name() == "none" and app.device is None and not dev.alive,
           "écouteurs partis : canal fermé, page d'attente")
     check(not app.tray.active, "écouteurs partis : l'icône s'en va")
+    if _snw is not None and snw_registered:
+        # Comme l'extension AppIndicator : l'icône suit le nom UNIQUE de l'expéditeur (vu chez Tof : rendre le nom
+        # de l'icône ne suffisait pas, elle restait jusqu'à la sortie de Sirène)
+        sender = snw_registered[-1][0]
+
+        def gone():
+            r = _snw.call_sync("org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus",
+                               "NameHasOwner", GLib.Variant("(s)", (sender,)), GLib.VariantType("(b)"),
+                               Gio.DBusCallFlags.NONE, 1000, None)
+            return not r.unpack()[0]
+        yield Wait(2, until=gone)
+        check(gone(), "la connexion qui portait l'icône est fermée : la barre la retire")
 
 
 @step
