@@ -61,11 +61,12 @@ class NotifyTest(unittest.TestCase):
     def test_freedesktop_without_desktop_file(self):
         self.assertFalse(notify.installed(), "lancé depuis les sources")
         n = notify.Notifier(FakeApp())
-        n.send("bt-x", "HUAWEI FreeBuds 6i", "Connecté", "audio-headphones")
+        n.send("bt-x", "HUAWEI FreeBuds 6i", "Connecté", "audio-headphones", low=True)
         self.assertTrue(pump(lambda: len(self.calls) == 1 and "bt-x" in n._ids))
         app_name, replaces, icon, title, body = self.calls[0][:5]
         self.assertEqual((app_name, replaces, icon, title, body),
                          ("Sirène", 0, "audio-headphones", "HUAWEI FreeBuds 6i", "Connecté"))
+        self.assertEqual(self.calls[0][6]["urgency"], 0, "priorité basse (urgency 0, comme notify-send -u low)")
         n.send("bt-x", "HUAWEI FreeBuds 6i", "Déconnecté", "bluetooth-disabled")
         self.assertTrue(pump(lambda: len(self.calls) == 2))
         self.assertEqual(self.calls[1][1], 41, "même appareil : la notification d'avant est remplacée")

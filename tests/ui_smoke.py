@@ -64,7 +64,7 @@ pause = FakePause()
 app = SireneApp(watcher=lambda cb: watchers.append(FakeWatcher(cb)) or watchers[-1], connect=connect,
                 autopause=pause, timeout=0.5)
 notified = {}
-app.notify = lambda nid, title, body, icon: notified.__setitem__(nid, (title, body, icon))
+app.notify = lambda nid, title, body, icon, low=False: notified.__setitem__(nid, (title, body, icon, low))
 
 # Fausse barre du haut (org.kde.StatusNotifierWatcher), sur sa propre connexion au bus de session
 SNW_XML = """<node><interface name="org.kde.StatusNotifierWatcher">
@@ -161,6 +161,7 @@ def notification_de_connexion(win):
     n = notified.get("bt-CC:B0:A8:AB:43:43")
     check(n is not None and n[1] == tr("Connecté") and n[2] == "audio-headphones",
           "notification « connecté » avec l'icône de l'appareil (comme bt-notify)")
+    check(n is not None and n[3] is True, "connexion : priorité basse (demande de Tof)")
 
 
 @step
@@ -337,7 +338,8 @@ def pause_au_retrait(win):
 def batterie_faible(win):
     fakes[0].push(Packet(b"\x01\x27", [(2, bytes((100, 18, 67))), (3, b"\x00\x00\x00")]))
     yield Wait(2, until=lambda: "battery-right" in notified)
-    check("battery-right" in notified, "droit à 18 % : « Batterie faible »")
+    check("battery-right" in notified and notified["battery-right"][3] is False,
+          "droit à 18 % : « Batterie faible », priorité normale")
     del notified["battery-right"]
     fakes[0].push(Packet(b"\x01\x27", [(2, bytes((100, 17, 67))), (3, b"\x00\x00\x00")]))
     yield Wait(0.5)
