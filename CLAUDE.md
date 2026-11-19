@@ -111,6 +111,15 @@ les premiers écouteurs à réduction de bruit.
   tant que les écouteurs n'ont pas donné la valeur ; groupe caché si toutes ses lignes le sont. Code inconnu
   (triple tape « 4 », « 5 », « 6 » des 6i) montré tel quel. `ui/labels.py` : identifiants → textes.
 
+- Égaliseur personnalisé (onglet Son, si `eq_max_custom` > 0) : « Créer… » (nom ≤ 24 octets, part du préréglage
+  choisi : `Equalizer._select` d'un nom inconnu, numéro 100 et suivants), 10 bandes 32 Hz → 16 kHz de -60 à +60
+  dixièmes de dB (comme OpenFreebuds), entendues tout de suite : un seul envoi 300 ms après le dernier mouvement
+  (`_eq_send`) ; « Modifications non enregistrées » → Enregistrer (`eq_saved` vrai) / Annuler (faux = valeurs
+  d'avant) ; « Supprimer ce préréglage » (`eq_rows` None). Préréglage intégré : pas de bandes.
+- Double connexion (onglet Appareil) : par appareil connu, étoile = préféré, Connecter / Déconnecter, Oublier…
+  (confirmation). « Cet ordinateur » = adresse d'un de NOS adaptateurs (`bluez.Watcher.adapters`) : ni
+  Déconnecter ni Oublier (on se couperait des écouteurs).
+
 ## Port des écouteurs et auto-pause (vu chez Tof, novembre 2026)
 
 - Trame 2B25 : p1 = gauche, p2 = droit (01 porté, 00 retiré). 7i : y répondent sur demande et l'annoncent pour
@@ -146,7 +155,7 @@ sable : les essais réels sont faits par Tof.
 1. FAIT : squelette, protocole, toutes les fonctions des 4i / 6i / 7i, connexion, diagnostic.
 2. Essai réel de `sirene.probe` sur les 6i de Tof (puis les 7i à Noël).
 3. FAIT (0.0.1, à essayer chez Tof) : interface, suivi de BlueZ, pause au retrait par MPRIS.
-   Reste : égaliseur personnalisé (bandes), actions de la double connexion (connecter, oublier, préféré).
+   FAIT ensuite : égaliseur personnalisé et actions de la double connexion (ci-dessous).
 4. FAIT (0.0.2) : icône de la barre (batterie, contrôle du bruit), arrière-plan, lancement à l'ouverture de
    session, notifications de connexion, alerte batterie faible. Reste : action à la connexion, raccourcis
    globaux (X11).

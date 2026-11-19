@@ -220,6 +220,94 @@ def geste_change(win):
     check(want.to_bytes() in fakes[0].sent, "double tape droit → morceau suivant envoyé")
 
 
+def respond(kind_title, response):
+    """Répond à la boîte de dialogue ouverte (Adw.MessageDialog) dont le titre commence par kind_title."""
+    for w in Gtk.Window.list_toplevels():
+        if isinstance(w, Adw.MessageDialog) and w.get_visible() and w.get_heading().startswith(kind_title):
+            w.response(response)
+            w.close()
+            return True
+    return False
+
+
+@step
+def egaliseur_personnalise(win):
+    from sirene.backend import handlers as hd
+    page = win.device_page
+    page.stack.set_visible_child_name("sound")
+    yield Wait(0.3)
+    check(page.eq_group.get_mapped() and not page.eq_box.get_visible(),
+          "égaliseur personnalisé proposé ; préréglage intégré : pas de bandes")
+    ok = bytes.fromhex("5a0009002b497f04000186a0b3c6")
+    get_eq = Packet.read(b"\x2b\x4a", range(1, 9))
+
+    def eq_state(current, data):
+        custom = bytes((100, 10)) + bytes(v & 0xFF for v in data) + "Ma voix".encode().ljust(24, b"\x00")
+        return Packet(b"\x2b\x4a", [(1, b"\x01"), (2, bytes((current,))), (3, bytes.fromhex("01020309")),
+                                     (4, b"\x01"), (8, custom)])
+    create = Packet.write(b"\x2b\x49", hd.eq_payload(100, "Ma voix", "00" * 10, 1))
+    fakes[0].answer(create, ok)
+    fakes[0].answer(get_eq, eq_state(100, [0] * 10))
+    page._ask_new_preset()
+    yield Wait(0.3)
+    entry = [w for w in Gtk.Window.list_toplevels() if isinstance(w, Adw.MessageDialog) and w.get_visible()]
+    entry = entry[0].get_extra_child() if entry else None
+    if entry is not None:
+        entry.set_text("Ma voix")
+    respond(tr("Nouveau préréglage"), "create")
+    yield Wait(3, until=lambda: app.device.get("sound", "eq_preset") == "Ma voix")
+    check(create.to_bytes() in fakes[0].sent, "nouveau préréglage « Ma voix » créé dans les écouteurs (n° 100)")
+    yield Wait(0.3)
+    check(page.eq_box.get_visible() and len(page.eq_scales) == 10, "préréglage à soi : 10 bandes")
+
+    bass = [30, 20, 10, 0, 0, 0, 0, 0, 0, 0]
+    tune = Packet.write(b"\x2b\x49", hd.eq_payload(100, "Ma voix", bytes(v & 0xFF for v in bass), 1))
+    fakes[0].answer(tune, ok)
+    for scale, v in zip(page.eq_scales, bass):
+        scale.set_value(v)
+    yield Wait(3, until=lambda: tune.to_bytes() in fakes[0].sent)
+    yield Wait(0.5)
+    check(fakes[0].sent.count(tune.to_bytes()) == 1, "bandes envoyées une seule fois, après le dernier mouvement")
+    yield Wait(0.3)
+    check(page.eq_unsaved.get_visible(), "« Modifications non enregistrées » : Annuler / Enregistrer")
+    check(page.eq_values[0].get_label() == "+3", "valeur affichée en dB (+3)")
+    app.set_value("sound", "eq_saved", True)
+    yield Wait(3, until=lambda: app.device.get("sound", "eq_saved") is True)
+    yield Wait(0.2)
+    check(not page.eq_unsaved.get_visible(), "enregistré : la ligne s'en va")
+    page.stack.set_visible_child_name("status")
+
+
+@step
+def double_connexion_actions(win):
+    page = win.device_page
+    page.stack.set_visible_child_name("device")
+    yield Wait(0.4)
+    rows = {r.get_title(): r for r in page._dc_rows}
+    check(set(rows) == {"zorin-tof", "Téléphone"}, "appareils connus : l'ordinateur et le téléphone")
+    this = rows.get("zorin-tof")
+    check(this is not None and tr("Cet ordinateur") in this.get_subtitle(), "« Cet ordinateur » reconnu")
+    buttons = lambda r: [w for w in walk(r) if isinstance(w, Gtk.Button)]  # noqa: E731
+    labels = [b.get_label() for b in buttons(this)]
+    check(tr("Déconnecter") not in labels, "pas de « Déconnecter » pour cet ordinateur (on se couperait)")
+    phone = rows["Téléphone"]
+    connect = [b for b in buttons(phone) if b.get_label() == tr("Connecter")]
+    check(bool(connect), "téléphone pas connecté : bouton « Connecter »")
+    if connect:
+        connect[0].emit("clicked")
+        want = Packet(b"\x2b\x33", [(1, bytes.fromhex("aabbccddeeff"))]).to_bytes()
+        yield Wait(3, until=lambda: want in fakes[0].sent)
+        check(want in fakes[0].sent, "« Connecter » : commande envoyée aux écouteurs")
+    star = [w for w in walk(phone) if isinstance(w, Gtk.ToggleButton)]
+    if star:
+        star[0].set_active(True)
+        want = Packet(b"\x2b\x32", [(1, bytes.fromhex("aabbccddeeff"))]).to_bytes()
+        yield Wait(3, until=lambda: want in fakes[0].sent)
+        check(want in fakes[0].sent, "étoile : téléphone choisi comme appareil préféré")
+    page.stack.set_visible_child_name("status")
+    yield Wait(0.2)
+
+
 @step
 def refus_des_ecouteurs(win):
     """Les écouteurs ne répondent pas : message, et la ligne revient à l'ancienne valeur."""

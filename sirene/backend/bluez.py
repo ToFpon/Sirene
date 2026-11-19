@@ -51,6 +51,7 @@ class Watcher:
     def __init__(self, on_change: Callable[[BtDevice], None]):
         self.on_change = on_change
         self.devices: dict[str, BtDevice] = {}
+        self.adapters: set[str] = set()           # adresses de nos adaptateurs (« cet ordinateur »)
         self._props: dict[str, dict] = {}
         self._subs = []
         try:
@@ -71,6 +72,9 @@ class Watcher:
             for path, ifaces in _managed(self.bus).items():
                 if DEVICE in ifaces:
                     self._store(path, dict(ifaces[DEVICE]))
+                address = ifaces.get("org.bluez.Adapter1", {}).get("Address")
+                if address:
+                    self.adapters.add(address.upper())
         except GLib.Error:
             pass
 

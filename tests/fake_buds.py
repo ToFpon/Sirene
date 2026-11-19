@@ -86,8 +86,10 @@ def buds_6i() -> FakeBuds:
         (1, b"\x01"), (2, b"\x01"), (3, bytes.fromhex("01020309")), (4, b"\x01"), (8, b"")]))
     f.answer(Packet.read(b"\x0c\x02", [1, 2]), Packet(b"\x0c\x02", [(3, b"zh-CN,en-GB")]))
     f.answer(Packet.read(b"\x2b\x2f", [1]), Packet(b"\x2b\x2f", [(1, 0)]))
-    f.answer(Packet(b"\x2b\x31", [(1, b"")]), Packet(b"\x2b\x31", [
-        (2, 1), (3, 0), (4, bytes.fromhex("2b3c1292a0a8")), (5, 1), (7, 0), (9, b"zorin-tof")]))
+    f.answer(Packet(b"\x2b\x31", [(1, b"")]),
+             Packet(b"\x2b\x31", [(2, 2), (3, 0), (4, bytes.fromhex("2b3c1292a0a8")), (5, 1), (7, 1), (9, b"zorin-tof")]),
+             Packet(b"\x2b\x31", [(2, 2), (3, 1), (4, bytes.fromhex("aabbccddeeff")), (5, 0), (7, 0),
+                                   (9, "Téléphone".encode())]))
     f.answer(Packet.read(b"\x2b\x25", [1, 2]), Packet(b"\x2b\x25", [(1, 1), (2, 1), (3, 0), (4, 0)]))
     return f
 
@@ -96,6 +98,7 @@ class FakeWatcher:
     def __init__(self, on_change):
         self.on_change = on_change
         self.devices = {}
+        self.adapters = {"2B:3C:12:92:A0:A8"}       # « zorin-tof » de la liste de double connexion
 
     def stop(self):
         pass

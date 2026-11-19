@@ -1,7 +1,7 @@
 """Capture de la fenêtre avec de faux écouteurs 6i (valeurs de Tof), sous Xvfb :
 
     xvfb-run -a -s "-screen 0 1280x1000x24" python3.12 tools/screenshot.py SORTIE.png [--dark] [--empty]
-        [--size=LxH] [--scroll=PIXELS] [--tab=status|gestures|sound|device]
+        [--size=LxH] [--scroll=PIXELS] [--tab=status|gestures|sound|device] [--eq]
 """
 
 import os
@@ -41,6 +41,12 @@ class NoPause:
 
 def connect(address, channel):
     fakes.append(buds_6i())
+    if "eq" in opts:                    # préréglage à soi en cours (onglet Son)
+        from sirene.backend.protocol import Packet
+        rows = [30, 20, 10, 0, -10, -10, 0, 10, 20, 30]
+        custom = bytes((100, 10)) + bytes(v & 0xFF for v in rows) + "My voice".encode().ljust(24, b"\x00")
+        fakes[-1].answer(Packet.read(b"\x2b\x4a", range(1, 9)), Packet(b"\x2b\x4a", [
+            (1, b"\x01"), (2, bytes((100,))), (3, bytes.fromhex("01020309")), (4, b"\x01"), (8, custom)]))
     return fakes[-1].connect(address, channel)
 
 

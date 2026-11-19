@@ -2,3 +2,4 @@
 .battery-tile { padding: 12px 6px; }
 .battery-tile levelbar trough, .battery-tile levelbar block { min-height: 4px; border-radius: 2px; }
 .battery-tile levelbar { margin: 0 12px; }
+.eq-bands { padding: 12px 6px; }
