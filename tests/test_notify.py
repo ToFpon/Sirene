@@ -81,6 +81,8 @@ class NotifyTest(unittest.TestCase):
         self.assertEqual((app_name, replaces, icon, title, body),
                          ("Sirène", 0, "audio-headphones", "HUAWEI FreeBuds 6i", "Connecté"))
         hints = self.calls[0][6]
+        self.assertEqual(hints["image-path"], "audio-headphones", "icône de l'appareil en image (GNOME prend celle "
+                         "de l'application à la place de app_icon)")
         self.assertEqual((hints["urgency"], hints["transient"]), (1, True),
                          "priorité normale, éphémère (comme notify-send -e -u normal de bt-notify)")
         n.send("bt-x", "HUAWEI FreeBuds 6i", "Déconnecté", "bluetooth-disabled")

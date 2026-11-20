@@ -96,6 +96,8 @@ les premiers écouteurs à réduction de bruit.
   Connexions Bluetooth : priorité NORMALE + éphémères (`transient`, hint « transient », comme `notify-send -e -u
   normal` de bt-notify), toujours par org.freedesktop.Notifications (Gio.Notification n'a pas d'éphémère). Vu chez
   Tof : en priorité BASSE (0.1.2), GNOME ne les affichait pas, elles allaient directement dans la liste.
+  Icône de l'appareil dans le hint « image-path » : avec « desktop-entry » d'une application INSTALLÉE, GNOME 46
+  remplace app_icon par l'icône de l'application (vu chez Tof : plus d'icône de casque en 0.1.4).
   Contenu : connexion / déconnexion de TOUT appareil Bluetooth (`notify_connect`, comme
   bt-notify ; état connu au démarrage = pas de notification), batterie faible (`battery_alert`) : un écouteur sous
   20 % puis sous 10 %, une fois par seuil, réarmé au-dessus de 30 % ; 0 % ignoré (rangé dans le boîtier).

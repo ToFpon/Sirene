@@ -54,6 +54,9 @@ class Notifier:
         bus.call("org.freedesktop.Notifications", "/org/freedesktop/Notifications", "org.freedesktop.Notifications",
                  "Notify", GLib.Variant("(susssasa{sv}i)", (APP_NAME, self._ids.get(nid, 0), icon, title, body, [], {
                      "desktop-entry": GLib.Variant("s", APP_ID),
+                     # Sirène installée, GNOME met l'icône de l'APPLICATION (desktop-entry) à la place de app_icon :
+                     # l'icône de l'appareil passe par l'image de la notification (vu chez Tof, 0.1.4)
+                     "image-path": GLib.Variant("s", icon),
                      "urgency": GLib.Variant("y", 1),                                # normale (-u normal)
                      "transient": GLib.Variant("b", transient)}, -1)),               # -e de notify-send
                  GLib.VariantType("(u)"), Gio.DBusCallFlags.NONE, 3000, None, done)
