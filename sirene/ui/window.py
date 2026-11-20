@@ -72,7 +72,7 @@ class DevicePage(Gtk.Box):
         self.pages: dict[str, tuple] = {}
         self.stack = Adw.ViewStack(vexpand=True, hexpand=True)      # Adw.ViewStack est « final » : on le porte
         self.append(self.stack)
-        for name, title, icon in (("status", tr("État"), "audio-headphones-symbolic"),
+        for name, title, icon in (("status", tr("État"), "io.github.sirene.Sirene-symbolic"),
                                   ("gestures", tr("Gestes"), "input-touchpad-symbolic"),
                                   ("sound", tr("Son"), "audio-volume-high-symbolic"),
                                   ("device", tr("Appareil"), "preferences-system-symbolic")):
@@ -192,9 +192,9 @@ class DevicePage(Gtk.Box):
         self.firmware = Gtk.Label(xalign=0)
         self.firmware.add_css_class("dim-label")
         tiles = Gtk.Box(spacing=12, homogeneous=True, margin_top=12)
-        self.left = Battery(tr("Gauche"), "audio-headphones-symbolic")
-        self.right = Battery(tr("Droit"), "audio-headphones-symbolic")
-        self.case = Battery(tr("Boîtier"), "battery-symbolic")
+        self.left = Battery(tr("Gauche"), "sirene-earbud-left-symbolic")
+        self.right = Battery(tr("Droit"), "sirene-earbud-right-symbolic")
+        self.case = Battery(tr("Boîtier"), "sirene-case-symbolic")
         for t in (self.left, self.right, self.case):
             tiles.append(t)
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -493,10 +493,10 @@ class MainWindow(Adw.ApplicationWindow):
                                        tooltip_text=tr("Menu principal")))
 
         self.stack = Gtk.Stack(transition_type=Gtk.StackTransitionType.CROSSFADE)
-        self.none_page = Adw.StatusPage(icon_name="audio-headphones-symbolic", title=tr("Aucun écouteur connecté"),
+        self.none_page = Adw.StatusPage(icon_name="io.github.sirene.Sirene-symbolic", title=tr("Aucun écouteur connecté"),
                                         description=tr("Connectez vos FreeBuds en Bluetooth : Sirène les trouve "
                                                        "toute seule. Modèles pris en charge : FreeBuds 4i, 6i et 7i."))
-        self.busy_page = Adw.StatusPage(icon_name="audio-headphones-symbolic")
+        self.busy_page = Adw.StatusPage(icon_name="io.github.sirene.Sirene-symbolic")
         spinner = Gtk.Spinner(spinning=True, width_request=32, height_request=32, halign=Gtk.Align.CENTER)
         self.busy_page.set_child(spinner)
         self.fail_page = Adw.StatusPage(icon_name="dialog-warning-symbolic")

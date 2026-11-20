@@ -33,6 +33,10 @@ msgid "Protocole et pilotes"
 msgstr "Protokoll und Treiber"
 
 #: sirene/app.py:507
+msgid "Icônes des écouteurs"
+msgstr "Ohrhörer-Symbole"
+
+#: sirene/app.py:509
 msgid "Remerciements"
 msgstr "Danksagungen"
 

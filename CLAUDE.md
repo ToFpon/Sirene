@@ -85,6 +85,9 @@ les premiers écouteurs à réduction de bruit.
   réglage `autostart_offered`, une seule fois, toast dans la fenêtre ; vu chez Tof : l'option des Préférences
   passait inaperçue, Sirène ne démarrait pas avec la session), `autostart.py` : ~/.config/autostart, `sirene --background` installé, sinon ce
   Python + bin/sirene) : pas de fenêtre. Icônes `data/icons/hicolor` (index.theme OBLIGATOIRE, cf. Ithaca) ;
+  symboliques choisies par Tof, reprises de Bluetooth Battery Meter (maniacx, GPL-3, crédité) : écouteur gauche /
+  droit et boîtier (`sirene-earbud-left/right-symbolic`, `sirene-case-symbolic`, piles de l'onglet État) et la
+  paire = `io.github.sirene.Sirene-symbolic` (barre du haut, onglet État, pages d'attente) ;
   couleur corail (Odysseus bleu, Ithaca violet, Nausicaa orange, Calypso turquoise, Télémaque vert).
 - Notifications (`sirene/notify.py`) : PIÈGE vu chez Tof (aucune notification) — GNOME Shell REFUSE en silence les
   Gio.Notification d'une application sans .desktop installé (lookup_app(<id>.desktop) → InvalidAppError). Sans

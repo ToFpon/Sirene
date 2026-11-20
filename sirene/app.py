@@ -504,6 +504,8 @@ class SireneApp(Adw.Application):
         about.add_credit_section(tr("Protocole et pilotes"), [
             "OpenFreebuds (melianmiko) https://github.com/melianmiko/OpenFreebuds",
             "FreeBuds 7i (vicrodh) https://github.com/vicrodh/OpenFreebuds"])
+        about.add_credit_section(tr("Icônes des écouteurs"), [
+            "Bluetooth Battery Meter (maniacx) https://github.com/maniacx/Bluetooth-Battery-Meter"])
         about.add_credit_section(tr("Remerciements"), ["Ponce De Leon https://forum.zorin.com/u/Ponce-De-Leon"])
         about.present()
 

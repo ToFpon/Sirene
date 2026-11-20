@@ -29,6 +29,8 @@ Diagnosis from the sources: `python3 -m sirene.probe [--debug]` prints everythin
 The HUAWEI protocol and per-model drivers come from [OpenFreebuds](https://github.com/melianmiko/OpenFreebuds)
 by melianmiko (GPL-3.0), FreeBuds 7i support by [vicrodh](https://github.com/vicrodh/OpenFreebuds)
 (pull request #135). Rewritten without asyncio for a GTK application.
+Earphone and case icons from [Bluetooth Battery Meter](https://github.com/maniacx/Bluetooth-Battery-Meter) by maniacx
+(GPL-3.0).
 
 ## License
 
