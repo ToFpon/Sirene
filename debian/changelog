@@ -1,3 +1,13 @@
+sirene (0.1.5~noble1) noble; urgency=medium
+
+  * Nouvelles icônes des écouteurs et du boîtier, reprises de l'extension
+    Bluetooth Battery Meter (maniacx) ; la paire d'écouteurs devient
+    l'icône de Sirène dans la barre du haut.
+  * Les notifications de connexion affichent de nouveau l'icône de
+    l'appareil.
+
+ -- Tof <nourpon@gmail.com>  Fri, 20 Nov 2026 10:27:17 +0000
+
 sirene (0.1.4~noble1) noble; urgency=medium
 
   * Notifications de connexion Bluetooth en priorité normale et

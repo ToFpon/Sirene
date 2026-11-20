@@ -71,6 +71,14 @@
   </requires>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.1.5" date="2026-11-20">
+      <description>
+        <ul>
+          <li>New icons for the earbuds and the case, from Bluetooth Battery Meter by maniacx</li>
+          <li>Bluetooth connection notifications show the device icon again</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.1.4" date="2026-11-19">
       <description>
         <ul>
